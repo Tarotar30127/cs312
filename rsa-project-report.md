@@ -89,12 +89,12 @@ def generate_large_prime(n_bits: int) -> int:       # O(n^2)
 
 - Theoretical order of growth: *O(n^4)* 
 - Measured constant of proportionality for theoretical order: 3.522606183166179e-08
-- Empirical order of growth (if different from theoretical): The difference is that the theoretical grew fast exponential than my observed such that it grew past my graph's bounds by 1000 bits where as my empirical is closer to the observed. 
+- Empirical order of growth (if different from theoretical): O(n^3)
 - Measured constant of proportionality for empirical order: 4.112573022870454e-06
 - 
 ![baselinegraph.png](baselinegraph.png)
 
-*Fill me in*
+*The difference is that the theoretical grew fast exponential than my observed such that it grew past my graph's bounds by 1000 bits where as my empirical is closer to the observed. The Observed is n^3 growth and is closer to my observed.*
 
 ## Core
 
