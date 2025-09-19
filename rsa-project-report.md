@@ -100,7 +100,7 @@ def generate_large_prime(n_bits: int) -> int:       # O(n^2)
 
 ### Design Experience
 
-*Fill me in*
+*I talked to Collin Verbanatz and went went through*
 
 ### Theoretical Analysis - Key Pair Generation
 
