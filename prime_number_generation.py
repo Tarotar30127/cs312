@@ -4,6 +4,7 @@ from time import time
 
 sys.setrecursionlimit(3000)
 
+
 # You will need to implement this function and change the return value.
 def mod_exp(x: int, y: int, N: int) -> int:
     if y == 0:
@@ -37,7 +38,7 @@ def generate_large_prime(n_bits: int) -> int:
     while True:
         i = random.getrandbits(n_bits)
         if fermat(i, 20):
-            return i  # https://xkcd.com/221/
+            return i
 
 
 def main(n_bits: int):

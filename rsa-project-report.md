@@ -18,7 +18,7 @@ We went over each math creating problems and doing them by hand and after unders
 def mod_exp(x: int, y: int, N: int) -> int:         # O(n^3)
     if y == 0:                                      # O(1) return constant
         return 1                                    # O(1) return constant           
-    z: int = mod_exp(x, y // 2, N)                  # O(log(n)) recursion call
+    z: int = mod_exp(x, y // 2, N)                  # O(n) recursion call
     if y % 2 == 0:                                  # O(1) mod call
         return (z ** 2) % N                         # O(n^2) multiplication call
     return x * (z ** 2) % N                         # O(n^2) multiplication call
@@ -100,7 +100,7 @@ def generate_large_prime(n_bits: int) -> int:       # O(n^2)
 
 ### Design Experience
 
-*I talked to Collin Verbanatz and went went through*
+*I talked to Collin Verbanatz and went through Euclid algorithm by doing problems by hand. The Euclid algorithm allows the receive to decrypt the message by creating a public key e and N and private key of d and N and using the greatest common denominator to find  ax + by = gcd(x,y) and ed=1 modN*
 
 ### Theoretical Analysis - Key Pair Generation
 
@@ -185,7 +185,8 @@ def generate_large_prime(n_bits: int) -> int:       # O(n^2)
 
 ![img](img.png)
 
-*Fill me in*
+*I talked to Collin Verbanatz and went through Euclid algorithm by doing problems by hand. The Euclid algorithm allows the receive to decrypt the message by creating a public key e and N and private key of d and N and using the greatest common denominator to find  ax + by = gcd(x,y) and ed=1 modN*
+
 
 #### Decryption
 
