@@ -51,7 +51,7 @@ def main(key_file: Path, message_file: Path, output_file: Path):
         encrypted_bytes = to_bytes(encrypted_chunk, n_bytes)
         result.append(encrypted_bytes)
 
-    print(f'{time() - start} seconds elapsed')
+    print(f'{(time() - start)*1000} milliseconds elapsed')
 
     output_file.write_bytes(b''.join(result).rstrip(b'\x00'))
 

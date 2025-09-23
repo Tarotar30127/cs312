@@ -81,7 +81,7 @@ def generate_key_pairs(n_bits) -> tuple[int, int, int]:
 def main(n_bits: int, filename_stem: str):
     start = time()
     N, e, d = generate_key_pairs(n_bits)
-    print(f'{time() - start} seconds elapsed')
+    print(f'{(time() - start)*1000} milliseconds elapsed')
 
     public_file = filename_stem + '.public.txt'
     with open(public_file, 'w') as file:
