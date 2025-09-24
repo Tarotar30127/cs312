@@ -94,7 +94,11 @@ def generate_large_prime(n_bits: int) -> int:       # O(n)
 - 
 ![baselinegraph.png](baselinegraph.png)
 
-*The difference is that the theoretical grew fast exponential than my observed such that it grew past my graph's bounds by 1000 bits where as my empirical is closer to the observed. The Observed is n^3 growth and is closer to my observed.*
+*The difference is that the theoretical grew fast exponential than my observed such that it grew past my graph's bounds 
+by 1000 bits where as my empirical is closer to the observed. The Observed is n^3 growth and is closer to my observed. 
+This is due also to the random bits generated in a perfect world a prime would be found or number would be small however it 
+is random and adds to the theoretical being different to the observed and empirical.I also think my CPU being under powered 
+to support the theoretical curve, memory management, and function's speed is determined by the speed of multiplying very large numbers*
 
 ## Core
 
@@ -219,7 +223,8 @@ def generate_key_pairs(n_bits) -> tuple[int, int, int]:                 # O(n)
 *My theoretical growth O(n^4) curve grew faster and exceeds the bounds of my observed data, which indicating that the actual execution time does not grow as 
 fast. In contrast, the empirical O(n^3.2) curve appears to be a much closer fit to my measured execution times, which suggests that the observed growth is 
 closer to a O(n^3.2) with respect to the input size (N). This is the biggest difference that while O(n^4) represents an upper bound, the practical performance 
-of my code is closer to O(n^3.2).*
+of my code is closer to O(n^3.2). This is due to my CPU being under powered to support the theoretical curve, memory management, and function's speed is determined by 
+the speed of multiplying very large numbers. I also think that generating random prime numbers makes getting a faster time more lucky.*
 
 ## Stretch 1
 
@@ -459,7 +464,14 @@ def main(key_file: Path, message_file: Path, output_file: Path): #O(n)
 
 ![Encryption_execution_time_graph.png](Encryption_execution_time_graph.png)
 
-**
+*I observed that the theoretical O(n^4) curve grew exponentially faster than my observed data such that O(n^4)
+represents a polynomial growth. The rapid increase in the theoretical O(n^4) curve quickly surpasses the scale 
+of my plot which indicates that my encryption algorithm's time complexity is significantly better than O(n^4) and 
+closer to empirical O(n^0.5) curve appears to track the observed data much more closely. This is due to my CPU being 
+under powered to support the theoretical curve, memory management, and function's speed is determined by the speed of multiplying very large numbers 
+This suggests a surprisingly efficient growth rate for the encryption time as the input size increases. 
+While O(n^0.5) is a sublinear growth rate. It is worth noting that the initial data points show some fluctuations. 
+However, for larger input sizes shown, the empirical O(n^0.5) model provides a reasonable fit.*
 
 
 #### Decryption
@@ -471,7 +483,9 @@ def main(key_file: Path, message_file: Path, output_file: Path): #O(n)
 
 ![Decyrption_execution_time_graph.png](Decyrption_execution_time_graph.png)
 
-*Fill me in*
+*I observed that the theoretical O(n^4) curve grew exponentially faster than my observed data such that I firmly believe
+that my empirical O(n^1.6) is significantly closer to my observed. This is due to my CPU being under powered to support 
+the theoretical curve, memory management, and function's speed is determined by the speed of multiplying very large numbers.*
 
 ### Encrypting and Decrypting With A Classmate
 
