@@ -459,7 +459,7 @@ def main(key_file: Path, message_file: Path, output_file: Path): #O(n)
 
 ![Encryption_execution_time_graph.png](Encryption_execution_time_graph.png)
 
-*I talked to Collin Verbanatz and went through Euclid algorithm by doing problems by hand. The Euclid algorithm allows the receive to decrypt the message by creating a public key e and N and private key of d and N and using the greatest common denominator to find  ax + by = gcd(x,y) and ed=1 modN*
+**
 
 
 #### Decryption
