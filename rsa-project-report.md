@@ -453,24 +453,23 @@ def main(key_file: Path, message_file: Path, output_file: Path): #O(n)
 #### Encryption
 
 - Theoretical order of growth: *O(n^4)* 
-- Measured constant of proportionality for theoretical order: Encryption is 2.0593e-07 Decryption is 5.6247e-06
-- Empirical order of growth (if different from theoretical): Encryption is O(n^0.5) Decryption is O(n^1.5)
-- Measured constant of proportionality for empirical order: 
-- 
-![Decyrption_execution_time_graph.png](Decyrption_execution_time_graph.png)
+- Measured constant of proportionality for theoretical order: 2.0593e-07 
+- Empirical order of growth (if different from theoretical): O(n^0.5)
+- Measured constant of proportionality for empirical order: 1.1725e+00 
+
 ![Encryption_execution_time_graph.png](Encryption_execution_time_graph.png)
-- 
+
 *I talked to Collin Verbanatz and went through Euclid algorithm by doing problems by hand. The Euclid algorithm allows the receive to decrypt the message by creating a public key e and N and private key of d and N and using the greatest common denominator to find  ax + by = gcd(x,y) and ed=1 modN*
 
 
 #### Decryption
 
-- Theoretical order of growth: *copy from section above* 
-- Measured constant of proportionality for theoretical order: 
-- Empirical order of growth (if different from theoretical): 
-- Measured constant of proportionality for empirical order: 
+- Theoretical order of growth: *O(n^4)* 
+- Measured constant of proportionality for theoretical order: 5.6247e-06
+- Empirical order of growth (if different from theoretical): O(n^1.6)
+- Measured constant of proportionality for empirical order: 4.0868e-01
 
-![img](img.png)
+![Decyrption_execution_time_graph.png](Decyrption_execution_time_graph.png)
 
 *Fill me in*
 
