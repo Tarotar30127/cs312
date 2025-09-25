@@ -15,7 +15,7 @@ We went over each math creating problems and doing them by hand and after unders
 
 #### Time 
 
-def mod_exp(x: int, y: int, N: int) -> int:         # O(n^3)
+def mod_exp(x: int, y: int, N: int) -> int:         # O(n^3) 
     if y == 0:                                      # O(1) return constant
         return 1                                    # O(1) return constant           
     z: int = mod_exp(x, y // 2, N)                  # O(n) recursion call
@@ -37,16 +37,16 @@ def fermat(N: int, k: int) -> bool:                 # O(n^3)
 
 def generate_large_prime(n_bits: int) -> int:       # O(n^4)
     """Generate a random prime number with the specified bit length"""
-    while True:                                     # O(n)
-        i = random.getrandbits(n_bits)              # O(1)
-        if fermat(i, 20):                           # O(n^3)
+    while True:                                     # O(n) while loop
+        i = random.getrandbits(n_bits)              # O(1) call to random
+        if fermat(i, 20):                           # O(n^3) 
             return i
 
 *The time complexity is **O(n^4)***
 
 #### Space
 
-def mod_exp(x: int, y: int, N: int) -> int:         # O(n)
+def mod_exp(x: int, y: int, N: int) -> int:         # O(n)  only call stack
     if y == 0:                                      
         return 1                                           
     z: int = mod_exp(x, y // 2, N)                   
@@ -55,7 +55,7 @@ def mod_exp(x: int, y: int, N: int) -> int:         # O(n)
     return x * (z ** 2) % N                         
 
 
-def fermat(N: int, k: int) -> bool:                 # O(n)
+def fermat(N: int, k: int) -> bool:                 # O(n) influenced by complexity of mod_exp
     """
     Returns True if N is prime
     """
@@ -68,7 +68,7 @@ def fermat(N: int, k: int) -> bool:                 # O(n)
 
 def generate_large_prime(n_bits: int) -> int:       # O(n)
     """Generate a random prime number with the specified bit length"""
-    while True:                                     
+    while True:                                     # doesn't accumulate space over iterations.
         i = random.getrandbits(n_bits)              
         if fermat(i, 20):                           # O(n)
             return i
@@ -119,12 +119,12 @@ def extended_euclid(a: int, b: int) -> (int, int, int):                 #O(n^2)
     Note: a must be greater than b.
     """
     # base case
-    if b == 0:                                                          # O(1)
-        return a, 1, 0                                                  # O(1)
-    d, x1, y1 = extended_euclid(b, a % b)                               # O(n^2)
-    x = y1                                                              # O(1)
-    y = x1 - (a // b) * y1                                              # O(n^2)
-    return d, x, y                                                      # O(1)
+    if b == 0:                                                          # O(1) constant
+        return a, 1, 0                                                  # O(1) constant
+    d, x1, y1 = extended_euclid(b, a % b)                               # O(n^2)  recursion call with higher bits and mod
+    x = y1                                                              # O(1) constant
+    y = x1 - (a // b) * y1                                              # O(n^2) higher bits
+    return d, x, y                                                      # O(1) constant
 
 
 def generate_key_pairs(n_bits) -> tuple[int, int, int]:                 # O(n^4)
@@ -135,21 +135,21 @@ def generate_key_pairs(n_bits) -> tuple[int, int, int]:                 # O(n^4)
     Computes e and d such that e*d = 1 mod (p-1)(q-1)
     Return N, e, and d
     """
-    p: int = generate_large_prime(n_bits)                                # O(n^4)
-    q: int = generate_large_prime(n_bits)                                # O(n^4)
-    while p == q:                                                        # O(1) 
-        q = generate_large_prime(n_bits)                                 # O(n^4)
-    N: int = p * q                                                       # O(n^2)
-    r: int = (p - 1) * (q - 1)                                           # O(n^2)
-    e = 0                                                                # O(1)
-    d = 0                                                                # O(1)
-    for i in primes:                                                     # O(n^2).
-        gcd, x, y = extended_euclid(i, r)                                # O(n^2)
-        if gcd == 1:                                                     # O(1)
-            e = i                                                        # O(1)
-            d = x                                                        # O(1)
-            if d < 0:                                                    # O(1)
-                d += r                                                   # O(n)
+    p: int = generate_large_prime(n_bits)                                # O(n^4) see baseline
+    q: int = generate_large_prime(n_bits)                                # O(n^4) see baseline
+    while p == q:                                                        # O(n) constant 2 n bits
+        q = generate_large_prime(n_bits)                                 # O(n^4)  see baseline
+    N: int = p * q                                                       # O(n^2) multiplication fo 2 n bits
+    r: int = (p - 1) * (q - 1)                                           # O(n^2) multiplication fo 2 n bits
+    e = 0                                                                # O(1) constant
+    d = 0                                                                # O(1) constant
+    for i in primes:                                                     # O(n^2) number of iterations multiplied by the cost of the operations
+        gcd, x, y = extended_euclid(i, r)                                # O(n^2) see above
+        if gcd == 1:                                                     # O(1)  constant
+            e = i                                                        # O(1) constant
+            d = x                                                        # O(1) constant
+            if d < 0:                                                    # O(1) constant
+                d += r                                                   # O(n) addition of two numbers
             break                                                        # O(1)
     return N, e, d                                                       # O(1)
 *My time complexity is O(N^4)*
@@ -157,7 +157,7 @@ def generate_key_pairs(n_bits) -> tuple[int, int, int]:                 # O(n^4)
 #### Space
 
 
-def extended_euclid(a: int, b: int) -> (int, int, int):                 #O(n)
+def extended_euclid(a: int, b: int) -> (int, int, int):                 #O(n) recursion call stack
     """
     The Extended Euclid algorithm returns x, y, d such that:            
     d = GCD(a, b)                                                       
@@ -173,7 +173,7 @@ def extended_euclid(a: int, b: int) -> (int, int, int):                 #O(n)
     return d, x, y                                                      
 
 
-def generate_key_pairs(n_bits) -> tuple[int, int, int]:                 # O(n)
+def generate_key_pairs(n_bits) -> tuple[int, int, int]:                 # O(n) it calls helper functions 
     """
     Generate RSA public and private key pairs.
     Randomly creates a p and q (two large n-bit primes)
@@ -489,19 +489,39 @@ the theoretical curve, memory management, and function's speed is determined by 
 
 ### Encrypting and Decrypting With A Classmate
 
-*Fill me in*
+*I encrypted and decrypted with Eli Thompson. I sent Eli my public key and he encrypted a message and sent it to me. I 
+decrypted at 340.726852 milliseconds and I encrypted a message at 0.184059. He decrypted at 331.446886 milliseconds and 
+I encrypted a message at 0.201225. My message was "Hello, gary" and his message was "Hello, carter". The encryption and 
+decryption process was successful. It did take a while to send the key then encryption the message and send it back it
+was not as fast as messaging.*
 
 ## Stretch 2
 
 ### Design Experience
 
-*Fill me in*
+*I talked with Eli Thompson and we went through the Miller Rabin. Miller Rabin uses the fact that prime numbers are the 
+only numbers that square to 1 (modulo a prime p) are 1 and -1 which is the same as p-1. Both test try to prove that the 
+numbers are composite. The variable k represents the number of rounds of testing.*
 
 ### Discussion: Probabilistic Natures of Fermat and Miller Rabin 
 
-*Fill me in*
+*
+I ran the advanced primality testing.py with 41041 4 and 561 1. Fermat returned on both that 561 and 41041 Carmichael 
+number where prime when they are not prime. Miller Rabin algorithm showed that 561 and 41041 are not prime. The lower the 
+K number the less rounds of testing which means if you bump up k to 100 then fermat catches the number as not prime. 
+As K is lower like 1 or 2, then fermat is less likely to catch Carmichael numbers whereas Miller Rabin is more consistent.
+The probability of fermat is  (1/2)^k and the probability of miller rabin is (1/4)^k. The difference between the 2 is 
+that fermat will not catch Carmichael number.
+*
 
 ## Project Review
 
-*Fill me in*
-
+*In conclusion, I reviewed my project with Eli Thompson. We went over Baseline, Core, Stretch 1 and Stretch 2 code. 
+Our Baseline, and Core code were similar because we both followed the sudocode in the textbook. We differed in variable 
+names and structure. I learned about the fermat primality test and how primes are used to create RSA algorithm.
+Using the fermat algorithm and modexp function, I implemented the core RSA logic. This involved generating two 
+large prime numbers (p and q) then using the Extended Euclidean Algorithm to calculate the public (e) and private (d) 
+exponents, successfully creating a functional key pair. Then I put it to the test by
+using a Eli Thompson's public key to encrypt a file and sent it to them. In return, I received an encrypted file from them,
+which I successfully decrypted using my private key. For each major stage, I derived the theoretical time and space complexity
+and comparing it against empirical runtime data gathered by timing the algorithms with different input sizes.*
