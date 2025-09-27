@@ -37,8 +37,12 @@ def prepost_helper(graph: GRAPH, node: str, visited: set, current_tree: dict, co
     counter[0] += 1
 
 
-
-
+def reverse_graph(graph: GRAPH) -> dict[str, list[str]]:
+    reverse_dict = {node: [] for node in graph}
+    for node, neighbors in graph.items():
+        for neighbor in neighbors:
+            reverse_dict[neighbor].append(node)
+    return reverse_dict
 
 
 def find_sccs(graph: GRAPH) -> list[set[str]]:
@@ -46,7 +50,31 @@ def find_sccs(graph: GRAPH) -> list[set[str]]:
     Return a list of the strongly connected components in the graph.
     The list should be returned in order of sink-to-source
     """
-    return []
+    reverse = reverse_graph(graph)
+    reversed_prepost = prepost(reverse)
+    node_post = {}
+    for tree in reversed_prepost:
+        for node, (pre, post) in tree.items():
+            node_post[node] = post
+
+    sorted_nodes = sorted(node_post.keys(), key=lambda n: node_post[n], reverse=True)
+    visited = set()
+    sccs = []
+
+    def find_scc(start, neighbors):
+        visited.add(start)
+        neighbors.add(start)
+        for neighbor in graph[start]:
+            if neighbor not in visited:
+                find_scc(neighbor, neighbors)
+
+    for node in sorted_nodes:
+        if node not in visited:
+            component = set()
+            find_scc(node, component)
+            sccs.append(component)
+
+    return sccs
 
 
 def classify_edges(graph: GRAPH, trees: list[dict[str, list[int]]]) -> dict[str, set[tuple[str, str]]]:

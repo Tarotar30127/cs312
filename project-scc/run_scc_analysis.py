@@ -85,7 +85,7 @@ def main():
                     size,
                     density_factor,
                     # Pass in either prepost
-                    prepost,
+                    find_sccs,
                     # or find_sccs
                     # find_sccs
                     # for the analysis you want to run on the graph
