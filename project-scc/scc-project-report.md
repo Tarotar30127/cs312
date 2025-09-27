@@ -339,12 +339,26 @@ stories and editor evaluations. Slashdot has Nodes 82168 and Edges 948464.*
 
 ### Dataset Description
 
-*Fill me in*
+*Slashdot has Nodes 82168 and Edges 948464. The Nodes represent users and the edges represent a directed link from one 
+user to another. Specifically, in the Slashdot dataset, an edge signifies that one user has tagged another user as 
+either a friend or a foe.*
 
 ### Findings Discussion
 
-*Fill me in*
+*We found that there are quite a lot of people that had no connection to other users which broke our code because our
+reverse graph functions were not able to handle the the large dataset and no connections. This lead us to manipulate the dataset
+to allow us to run the analysis and find the strongly connect components or the people who are either more active, better connected. We
+found that 6642 SCCs or strongly connected components with the largest SCC size being 82 on average SCC size was 1.01. This 
+means that the average user has at least one friend which means that this network is not popping and very few people us it.*
 
 ## Project Review
 
-*Fill me in*
+*For my project review, I talked to Kyle Mak and Collin Verbanatz about the project and all that we learned. I learned 
+how to implement a pre-order and post-order DFS traversal and understood why using a set for visited nodes is better 
+than a list. I also got hands-on experience with calculating pre/post numbers and tracking recursion through counters. 
+Then, I learned how to reverse a graph and use the post-order of the reversed graph to find strongly connected components 
+efficiently. I practiced analyzing the theoretical time and space complexity for both DFS and SCC algorithms and 
+compared it with empirical data. We explored classifying edges as tree, forward, back, or cross edges and how articulation 
+points identify critical nodes in a network. I realized how these concepts apply to real-world examples like road networks 
+and supply chains. Overall, I strengthened my understanding of graph algorithms, learned to interpret results with real 
+datasets, and saw the importance of discussing design decisions with peers.*
