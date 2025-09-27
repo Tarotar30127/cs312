@@ -6,15 +6,18 @@
 
 *I talked with Kyle Mak and Collin Verbanatz about baseline. We talked about the pros and cons of using a list compare to
 a set for keeping track of visited nodes. A set is the best because it doesn't allow duplicates. You keep track of 
-pre- and post-numbers by implementing some kind of counter. We walked through a few problems by hand and *
+pre- and post-numbers by implementing some kind of counter. We walked through a few problems by hand and explained how it worked to each other.*
 
 ### Theoretical Analysis - Pre/Post Order Traversal
 
 #### Time 
-'''
-*def prepost(graph: GRAPH) -> list[dict[str, list[int]]]:*
+
+def prepost(graph: GRAPH) -> list[dict[str, list[int]]]:
+
     counter: list[int] = [1]
+
     visited = set()
+
     dfs_trees = []
     for node in graph:
         if node not in visited:
@@ -33,7 +36,7 @@ def prepost_helper(graph: GRAPH, node: str, visited: set, current_tree: dict, co
             prepost_helper(graph, neighbor, visited, current_tree, counter)
     current_tree[node][1] = counter[0]
     counter[0] += 1
-'''
+
 
 #### Space
 
