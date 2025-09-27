@@ -12,7 +12,7 @@ pre- and post-numbers by implementing some kind of counter. We walked through a 
 
 #### Time 
 '''
-def prepost(graph: GRAPH) -> list[dict[str, list[int]]]:
+*def prepost(graph: GRAPH) -> list[dict[str, list[int]]]:*
     counter: list[int] = [1]
     visited = set()
     dfs_trees = []
