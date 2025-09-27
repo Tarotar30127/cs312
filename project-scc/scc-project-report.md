@@ -300,25 +300,42 @@ with space since it just grows in proportion to the graph size.*
 
 ![core_graph.svg](core_graph.svg)![core_empirical_graph.svg](core_empirical_graph.svg)
 
-*In conclusion for core, the theoretical growth of O(V+E) matched closely with what we observed, so I didn’t see a need 
-to calculate an empirical order of growth. I think the growth is basically linear since the two terms are added together. 
+*In conclusion for core, the theoretical growth is O(V+E), but our empirical measurements suggest O(V log(V) + E),
+which matches the observed runtimes more closely. I think the growth is essentially linear, since the two terms are additive. 
 Overall, the runtime scales directly with the size of the graph.*
 
 ## Stretch 1
 
 ### Design Experience
 
-*Fill me in*
+*I talked to Kyle Mak and Collin Verbanatz about stretch 1. We talked about examples in the book on page 89 and the rules of the 
+forward, back and cross. We discussed how we were going to implement it. I chose to do 3 for loops although not the best
+it works. For example a edge is a forward edge if pre[u] < pre[v] and post[v] < post[u] and an edge is a back edge if 
+Back edge is pre[v] < pre[u] and post[u] < post[v]. We talked about how class scheduling,community, family history, 
+road and air traffic, social networks, and spead of disease are real-world examples of graphs*
 
 ### Articulation Points Discussion 
 
-*Fill me in*
+*
+An articulation point is a node in a graph that if removed increases the number of connected components is an intersection that.
+An articulation point in **road traffic** is an intersection because if the node is blocked or closed, it would split the 
+network into disconnected parts preventing traffic from reaching certain areas. In the road traffic example, nodes represent intersections or junctions and 
+edges represent roads connecting intersections. This is useful because traffic planners can identify critical intersections 
+to prioritize for maintenance or upgrades. During emergencies, authorities can plan detours around these key points to 
+avoid network-wide congestion. It can also help design more resilient road networks by adding alternative routes. 
+Similarly, in a **supply chain network**, nodes represent distribution centers and edges represent transportation links. 
+An articulation point is a facility whose failure would interrupt supply to certain regions, highlighting the need for redundancy,
+backup routes, and strategic planning to ensure continuous operations. Identifying articulation points in these networks 
+allows planners and managers to strengthen critical connections and mitigate potential disruptions.
+*
 
 ## Stretch 2
 
 ### Design Experience
 
-*Fill me in*
+*I talked to Kyle Mak and Collin Verbanatz about stretch 2. We talked about using slashdot from stanford which system allows 
+users to create a network of connections by tagging each other as either "friends" or "foes and is a mix of user-submitted 
+stories and editor evaluations. Slashdot has Nodes 82168 and Edges 948464.*
 
 ### Dataset Description
 

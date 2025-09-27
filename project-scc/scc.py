@@ -86,5 +86,21 @@ def classify_edges(graph: GRAPH, trees: list[dict[str, list[int]]]) -> dict[str,
         'back': set(),
         'cross': set()
     }
+    for tree in trees:
+        for leaf1 in tree:
+            for leaf2 in graph.get(leaf1, []):
+                if leaf2 not in tree:
+                    classification['cross'].add((leaf1, leaf2))
+                    continue
+
+                pre_u, post_u = tree[leaf1]
+                pre_v, post_v = tree[leaf2]
+
+                if pre_u < pre_v and post_v < post_u:
+                    classification['tree/forward'].add((leaf1, leaf2))
+                elif pre_v < pre_u and post_u < post_v:
+                    classification['back'].add((leaf1, leaf2))
+                else:
+                    classification['cross'].add((leaf1, leaf2))
 
     return classification

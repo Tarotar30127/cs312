@@ -133,7 +133,7 @@
         </header>
         <main class="main-content">
             <div class="test-summary">
-                <span>Passed: 2 / 3</span>
+                <span>Passed: 3 / 3</span>
                 <span>Total Score: 0 / 0</span>
             </div>
             
@@ -188,13 +188,13 @@
                 </div>
             </div>
             
-            <div class="test-result-failed">
+            <div class="test-result-passed">
                 <div class="content-wrapper">
                     <div class="result-header">
                         <h2>stretch1</h2>
                         <div class="result-subheader">
                             <div class="status">
-                                <h2>Status:</h2> Failed
+                                <h2>Status:</h2> Passed
                             </div>
                             <div class="score">
                                 <h2>Score:</h2> 0 / 0
@@ -203,169 +203,11 @@
                     </div>
                     
                     
-                    <div class="comparison-container">
-                        <div class="section">
-                            <p><strong>Output</strong></p>
-                            <div class="content">
-                                <pre>@stretch1
-    def test_edge_types():
-        trees = prepost(graph1)
-        edge_types = classify_edges(graph1, trees)
-        expected_edge_types = {
-            'tree/forward': {
-                ('a', 'e'), ('a', 'f'),
-                ('d', 'h'), ('d', 'i'), ('e', 'd'),
-                ('f', 'b'), ('f', 'c'), ('h', 'i'),
-                ('i', 'l'), ('j', 'k'), ('l', 'g')
-            },
-            'back': {
-                ('b', 'a'), ('g', 'd'),
-                ('k', 'j')
-            },
-            'cross': {
-                ('c', 'd'), ('c', 'e'), ('j', 'f'),
-                ('j', 'h'), ('k', 'i')
-            }
-        }
-    
->       assert edge_types == expected_edge_types
-E       AssertionError: assert {'tree/forward': set(), 'back': set(), 'cross': set()} == {'tree/forward': {('j', 'k'), ('f', 'c'), ('d', 'i'), ('h', 'i'), ('a', 'e'), ('f', 'b'), ('a', 'f'), ('e', 'd'), ('l', 'g'), ('i', 'l'), ('d', 'h')}, 'back': {('b', 'a'), ('k', 'j'), ('g', 'd')}, 'cross': {('c', 'd'), ('j', 'h'), ('c', 'e'), ('k', 'i'), ('j', 'f')}}
-E         Differing items:
-E         {'back': set()} != {'back': {('b', 'a'), ('g', 'd'), ('k', 'j')}}
-E         {'cross': set()} != {'cross': {('c', 'd'), ('c', 'e'), ('j', 'f'), ('j', 'h'), ('k', 'i')}}
-E         {'tree/forward': set()} != {'tree/forward': {('a', 'e'), ('a', 'f'), ('d', 'h'), ('d', 'i'), ('e', 'd'), ('f', 'b'), ...}}
-E         Full diff:
-E           {
-E         +  'back': set(),
-E         -  'back': {('b',
-E         -            'a'),
-E         -           ('g',
-E         -            'd'),
-E         -           ('k',
-E         -            'j')},
-E         -  'cross': {('c',
-E         ?           ^ ^^^
-E         +  'cross': set(),
-E         ?           ^^^ ^
-E         -             'd'),
-E         -            ('c',
-E         -             'e'),
-E         -            ('j',
-E         -             'f'),
-E         -            ('j',
-E         -             'h'),
-E         -            ('k',
-E         -             'i')},
-E         -  'tree/forward': {('a',
-E         ?                  ^ ^^^
-E         +  'tree/forward': set(),
-E         ?                  ^^^ ^
-E         -                    'e'),
-E         -                   ('a',
-E         -                    'f'),
-E         -                   ('d',
-E         -                    'h'),
-E         -                   ('d',
-E         -                    'i'),
-E         -                   ('e',
-E         -                    'd'),
-E         -                   ('f',
-E         -                    'b'),
-E         -                   ('f',
-E         -                    'c'),
-E         -                   ('h',
-E         -                    'i'),
-E         -                   ('i',
-E         -                    'l'),
-E         -                   ('j',
-E         -                    'k'),
-E         -                   ('l',
-E         -                    'g')},
-E           }
-
-test_scc.py:138: AssertionError</pre>
-                            </div>
-                        </div>
-                    </div>
+                        <div class="comparison-container-empty"></div>
                     
                     
                     
-                    <div class="comparison-container">
-                        <div class="section">
-                            <p><strong>Output</strong></p>
-                            <div class="content">
-                                <pre>@stretch1
-    def test_edge_types2():
-        trees = prepost(graph2)
-        edge_types = classify_edges(graph2, trees)
-        expected_edge_types = {
-            'tree/forward': {
-                ('n01', 'n02'), ('n02', 'n05'), ('n04', 'n03'), ('n05', 'n04'),
-                ('n05', 'n06'), ('n06', 'n07'), ('n06', 'n08'), ('n07', 'n08')
-            },
-            'back': {
-                ('n03', 'n02'), ('n04', 'n05'), ('n06', 'n05'),
-                ('n07', 'n05'), ('n07', 'n06'), ('n08', 'n05'),
-                ('n08', 'n06')
-            },
-            'cross': {
-                ('n09', 'n07'), ('n10', 'n08')
-            }
-        }
-    
->       assert edge_types == expected_edge_types
-E       AssertionError: assert {'tree/forward': set(), 'back': set(), 'cross': set()} == {'tree/forward': {('n06', 'n08'), ('n06', 'n07'), ('n02', 'n05'), ('n07', 'n08'), ('n01', 'n02'), ('n05', 'n04'), ('n05', 'n06'), ('n04', 'n03')}, 'back': {('n07', 'n05'), ('n07', 'n06'), ('n06', 'n05'), ('n03', 'n02'), ('n04', 'n05'), ('n08', 'n05'), ('n08', 'n06')}, 'cross': {('n10', 'n08'), ('n09', 'n07')}}
-E         Differing items:
-E         {'back': set()} != {'back': {('n03', 'n02'), ('n04', 'n05'), ('n06', 'n05'), ('n07', 'n05'), ('n07', 'n06'), ('n08', 'n05'), ...}}
-E         {'cross': set()} != {'cross': {('n09', 'n07'), ('n10', 'n08')}}
-E         {'tree/forward': set()} != {'tree/forward': {('n01', 'n02'), ('n02', 'n05'), ('n04', 'n03'), ('n05', 'n04'), ('n05', 'n06'), ('n06', 'n07'), ...}}
-E         Full diff:
-E           {
-E         +  'back': set(),
-E         +  'cross': set(),
-E         -  'back': {('n03',
-E         -            'n02'),
-E         -           ('n04',
-E         -            'n05'),
-E         -           ('n06',
-E         -            'n05'),
-E         -           ('n07',
-E         -            'n05'),
-E         -           ('n07',
-E         -            'n06'),
-E         -           ('n08',
-E         -            'n05'),
-E         -           ('n08',
-E         -            'n06')},
-E         -  'cross': {('n09',
-E         -             'n07'),
-E         -            ('n10',
-E         -             'n08')},
-E         -  'tree/forward': {('n01',
-E         ?                  ^ ^^^^^
-E         +  'tree/forward': set(),
-E         ?                  ^^^ ^
-E         -                    'n02'),
-E         -                   ('n02',
-E         -                    'n05'),
-E         -                   ('n04',
-E         -                    'n03'),
-E         -                   ('n05',
-E         -                    'n04'),
-E         -                   ('n05',
-E         -                    'n06'),
-E         -                   ('n06',
-E         -                    'n07'),
-E         -                   ('n06',
-E         -                    'n08'),
-E         -                   ('n07',
-E         -                    'n08')},
-E           }
-
-test_scc.py:160: AssertionError</pre>
-                            </div>
-                        </div>
-                    </div>
+                        <div class="comparison-container-empty"></div>
                     
                     
                 </div>
@@ -374,7 +216,7 @@ test_scc.py:160: AssertionError</pre>
             
         </main>
         <footer>
-            <p>Generated by byu_pytest_utils on September 27, 2025 01:32 PM</p>
+            <p>Generated by byu_pytest_utils on September 27, 2025 03:23 PM</p>
         </footer>
     </div>
 </body>
