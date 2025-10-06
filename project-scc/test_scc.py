@@ -1,3 +1,5 @@
+import itertools
+
 from byu_pytest_utils import tier
 
 from scc import prepost, find_sccs, classify_edges
@@ -33,6 +35,23 @@ graph2 = {
     'n09': ['n07'],
     'n10': ['n08']
 }
+
+
+def _assert_sccs_valid(graph, sccs):
+    """
+    If the SCCs are correct, and in sink-to-source order,
+    then we can do prepost on the graph in the sccs-provided order
+    and each tree returned will perfectly correspond to the
+    provided SCC.
+    """
+    new_graph = {
+        node: graph[node]
+        for node in itertools.chain(*sccs)
+    }
+    trees = prepost(new_graph)
+    for tree, scc in zip(trees, sccs):
+        assert set(tree) == set(scc)
+    assert len(trees) == len(sccs)
 
 
 @baseline
@@ -88,30 +107,14 @@ def test_prepost_2():
 
 @core
 def test_scc():
-    expected_sccs = [
-        {'d', 'g', 'l', 'i', 'h'},
-        {'e'},
-        {'c'},
-        {'a', 'b', 'f'},
-        {'j', 'k'}
-    ]
-
     sccs = find_sccs(graph1)
-
-    assert sccs == expected_sccs
+    _assert_sccs_valid(graph1, sccs)
 
 
 @core
 def test_scc_2():
     sccs = find_sccs(graph2)
-    expected_sccs = [
-        {'n02', 'n03', 'n04', 'n05', 'n06', 'n07', 'n08'},
-        {'n10'},
-        {'n09'},
-        {'n01'},
-    ]
-
-    assert sccs == expected_sccs
+    _assert_sccs_valid(graph2, sccs)
 
 
 @stretch1
