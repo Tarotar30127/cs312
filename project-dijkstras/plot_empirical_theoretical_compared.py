@@ -1,3 +1,5 @@
+import math
+
 import matplotlib.pyplot as plt
 
 # Run run_dijkstra_analysis.py to populate the runtimes
@@ -7,10 +9,10 @@ from _runtimes import runtimes
 def main():
     # Define this
     def theoretical_big_o(v, e):
-        return v**2
+        return (v+e) * math.log(v)
 
     # Fill in from result using compute_coefficient
-    coeff = 3.856836644345053e-08
+    coeff = 1.0031591352652217e-08
 
     vv, ee, times = zip(*runtimes)
     #
@@ -41,18 +43,18 @@ def main():
     )
 
     # Update title, legend, and axis labels as needed
-    ax.legend(['Observed', 'Theoretical O(V^2)'])
+    ax.legend(['Observed', 'Theoretical O((V+E)log(V))'])
     ax.set_xlabel('|V|')
     ax.set_ylabel('|E|')
     ax.set_zlabel('Runtime')
-    ax.set_title('Time for SCC on Graph')
+    ax.set_title('Time for Dijkstra on Graph')
 
     # You are welcome to play with the view angle as you'd like
     # elev=0 with azim=0 and azim=90 might be interesting
     ax.view_init(elev=10, azim=-60)
 
     fig.show()
-    fig.savefig('baseline_empirical.png')
+    fig.savefig('core_theoretical.png')
 
 
 if __name__ == '__main__':
