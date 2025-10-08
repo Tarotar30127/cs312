@@ -4,10 +4,12 @@ class HeapPriorityQueue:
         self.position = {}
         self.nodes = []
 
-    def insert(self, node, distance_to_target):
+    def insert(self, node, distance_to_target: float):
         self.nodes.append(node)
-        self.position[node] = (len(self.nodes)-1)
+        new_index = len(self.nodes) - 1
+        self.position[node] = new_index
         self.map_of_distance[node] = distance_to_target
+        self.bubble_up(new_index)
 
     def delete_min(self):
         if not self.nodes:
@@ -23,6 +25,7 @@ class HeapPriorityQueue:
         self.shift_down(0)
         self.position.pop(min_node)
         self.map_of_distance.pop(min_node)
+        return min_node
 
     def decrease_key(self, node, new_distance):
         self.map_of_distance[node] = new_distance
@@ -75,7 +78,41 @@ def find_shortest_path_with_heap(
         - the list of nodes (including `source` and `target`)
         - the cost of the path
     """
+    dist = {}
+    prev = {}
+    pq = HeapPriorityQueue()
+    for node in graph:
+        dist[node] = float('inf')
+        prev[node] = None
 
+    dist[source] = 0
+    for node, distance in dist.items():
+        pq.insert(node, distance)
+
+    while pq.nodes:
+        current_node = pq.delete_min()
+        if current_node == target:
+            break
+        if dist[current_node] == float('inf'):
+            continue
+        for neighbor, weight in graph.get(current_node, {}).items():
+            new_dist = dist[current_node] + weight
+            if new_dist < dist[neighbor]:
+                dist[neighbor] = new_dist
+                prev[neighbor] = current_node
+                pq.decrease_key(neighbor, new_dist)
+    if dist.get(target) is None or dist[target] == float('inf'):
+        return [], float('inf')
+
+    path = []
+    current = target
+    while current is not None:
+        path.insert(0, current)
+        current = prev[current]
+    if path[0] == source:
+        return path, dist[target]
+    else:
+        return [], float('inf')
 
 
 def find_shortest_path_with_linear_pq(
