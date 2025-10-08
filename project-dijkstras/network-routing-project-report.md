@@ -417,7 +417,8 @@ PQ will be faster than linear PQ in the sparser graph and high graph size.*
 | 3500 | 1       | 862.75         | 984.73              |
 
 ### Plot
-
+![dijkstra_comparison_density_0_6.png](dijkstra_comparison_density_0_6.png)
+![dijkstra_comparison_density_1_0.png](dijkstra_comparison_density_1_0.png)
 ![performance_density_0_6.png](performance_density_0_6.png)
 ![performance_density_1_0.png](performance_density_1_0.png)
 
