@@ -417,36 +417,69 @@ PQ will be faster than linear PQ in the sparser graph and high graph size.*
 | 3500 | 1       | 862.75         | 984.73              |
 
 ### Plot
+
 ![performance_density_0_6.png](performance_density_0_6.png)
-*Fill me in*
 ![performance_density_1_0.png](performance_density_1_0.png)
+
+*From the graphs, you can see that in both plots that the Heap PQ appears to have a lower runtime compared to the Linear PQ.
+This is especially noticeable as N gets larger. This suggests that the Heap Priority Queue implementation is more 
+efficient as graphs and node counts increase compared to linear pq.*
+
 ### Discussion
 
-*Fill me in*
+*I talked to Kyle Mak and Collin Verbanatz about Dijkstra's shortest path algorithm and the different implementations of
+the priority queue (PQ). The heap implementation was a highly efficient tree-based data structure whereas the Linear 
+PQ was a simpler but often less efficient implementation. We discussed how the different implementation's performance 
+and the factors that influenced each one. The heap implementation was sensitive to the number of edges whereas linear pq
+performance was primarily driven by the number of vertices, regardless of how many edges there are.*
 
 ## Stretch 2
 
 ### Design Experience
 
-*Fill me in*
+*I talked to Kyle Mak and Collin Verbanatz about the Spatial Random Graph generator and how it creates a network where 
+the nodes have physical positions and the connections. The random positions are influenced by these positions. It 
+operates in three distinct phases with parameters controlling each phase. The 3 phases are Node Placement, Edge Creation,
+and Edge Weighting. Node placement is influenced by the distribution parameter which can be uniform or gaussian or circle.
+Edge creation is decided by the density parameter or how many other nodes are connected to it. Edge weight is decided 
+by the noise parameter or the cost assigned to each weight.*
 
 ### Provided Graph Generation Algorithm Explanation
 
-*Fill me in*
+*For the stretch 2, I decided to focus on building a generator specifically for task scheduling. This semester I have 
+been struggling all my classes, I've been thinking a lot about managing dependencies and deadlines, so it felt like 
+a relevant problem to tackle. I chose to implement a probabilistic Directed Acyclic Graph generator. I selected this algorithm 
+because Directed Acyclic Graph generators are the fundamental structure for modeling problems with dependencies, such as the task scheduling 
+application mentioned in the project guidance. A network routing problem can sometimes have cycles, but many real-world 
+applications for example like project management or academic course prerequisites require a graph with no cycles.*
 
 ### Selected Graph Generation Algorithm Explanation
 
-*Fill me in*
+*My implementation of a Directed Acyclic Graph generator starts with Node Ordering. The nodes are created and indexed 
+from 0 to n−1. Then phase is Directed Edges where the algorithm iterates through every pair of nodes (i,j). 
+An edge is only ever considered from a node i to a node j if i<j. Then the last phase is Probabilistic Creation which is 
+for each potential "forward" edge, a random number is checked against a given edge_prob or density parameter and if the 
+random number is less than the probability then the directed edge is created. Because an edge can never point from a 
+higher-indexed node to a lower-indexed one, it's impossible to traverse a path that leads back to a previously visited 
+node. This ensures the resulting graph is always a Directed Acyclic Graph. Each node is also assigned a random integer 
+weight to show a property like task duration.*
 
 #### Screenshots of Working Graph Generation Algorithm
 
-![img](small.png)
+![Small_graph.png](Small_graph.png)
 
-![img](medium.png)
+![Medium_graph.png](Medium_graph.png)
 
-![img](large.png)
+![Large_graph.png](Large_graph.png)
+
+
 
 ## Project Review
 
-*Fill me in*
+*I talked to Kyle Mak and Collin Verbanatz about the Dijkstra project especially about implementing Dijkstra's.
+We were able to see firsthand how the choice of an underlying data structure influenced linear priority queue versus 
+the more complex binary heap. It was interesting to see how data structure and code structure dramatically impacts performance. 
+It’s one thing to see time complexities like O(V2) and O(ElogV) in a textbook, but it's a completely different experience 
+to build both versions and watch the theory come to life in the empirical data. This project provided a lesson on how a 
+clever data structure is not just a minor optimization but a efficient algorithm.*
 
