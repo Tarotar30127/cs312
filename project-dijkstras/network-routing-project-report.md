@@ -416,7 +416,7 @@ PQ will be faster than linear PQ in the sparser graph and high graph size.*
 | 3000 | 1       | 170.00         | 765.96              |
 | 3500 | 1       | 862.75         | 984.73              |
 
-### Plot
+### Plot![dijkstra_comparison.png](dijkstra_comparison.png)
 ![dijkstra_comparison_density_0_6.png](dijkstra_comparison_density_0_6.png)
 ![dijkstra_comparison_density_1_0.png](dijkstra_comparison_density_1_0.png)
 ![performance_density_0_6.png](performance_density_0_6.png)
@@ -438,7 +438,7 @@ performance was primarily driven by the number of vertices, regardless of how ma
 
 ### Design Experience
 
-*I talked to Kyle Mak and Collin Verbanatz about the Spatial Random Graph generator and how it creates a network where 
+*I talked to Kyle Mak and Collin Verbanatz about the Random Graph generator and how it creates a network where 
 the nodes have physical positions and the connections. The random positions are influenced by these positions. It 
 operates in three distinct phases with parameters controlling each phase. The 3 phases are Node Placement, Edge Creation,
 and Edge Weighting. Node placement is influenced by the distribution parameter which can be uniform or gaussian or circle.
@@ -447,7 +447,8 @@ by the noise parameter or the cost assigned to each weight.*
 
 ### Provided Graph Generation Algorithm Explanation
 
-*For the stretch 2, I decided to focus on building a generator specifically for task scheduling. This semester I have 
+*For the stretch 2, I decided to focus on building a generator specifically for task scheduling. A random graph generator
+is a algorithm that creates graphs automatically and randomly based on probability. This semester I have 
 been struggling all my classes, I've been thinking a lot about managing dependencies and deadlines, so it felt like 
 a relevant problem to tackle. I chose to implement a probabilistic Directed Acyclic Graph generator. I selected this algorithm 
 because Directed Acyclic Graph generators are the fundamental structure for modeling problems with dependencies, such as the task scheduling 
@@ -480,7 +481,7 @@ weight to show a property like task duration.*
 *I talked to Kyle Mak and Collin Verbanatz about the Dijkstra project especially about implementing Dijkstra's.
 We were able to see firsthand how the choice of an underlying data structure influenced linear priority queue versus 
 the more complex binary heap. It was interesting to see how data structure and code structure dramatically impacts performance. 
-It’s one thing to see time complexities like O(V2) and O(ElogV) in a textbook, but it's a completely different experience 
-to build both versions and watch the theory come to life in the empirical data. This project provided a lesson on how a 
+It’s one thing to see time complexities in a textbook, but it's a completely different experience 
+to code both versions and watch the theory come to life in the data. This project provided a lesson on how a 
 clever data structure is not just a minor optimization but a efficient algorithm.*
 
