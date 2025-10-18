@@ -348,7 +348,14 @@ recursively splits the point set, computes the hulls of the two halves, and then
 
 ### Chosen Convex Hull Implementation Description
 
-*Fill me in*
+*In order to implement the Graham scan the first step is get a guaranteed starting point that's definitely on the hull, 
+we find our "anchor" by picking the point with the lowest y-coordinate. Next, we sort all the other points by the angle 
+they make with this anchor. Then we use a clever cross-product check for this so we don't have to calculate any slow, 
+actual angles. Lastly, we create a stack and add our anchor and the first point from our sorted list, which forms our 
+initial "edge" of the hull. Then, we walk through the rest of the sorted points. For each new point, we check if it 
+creates a right turn with the last two points on the stack. If it creates a right turn, we pop the last point off the 
+stack because it must be inside the hull, and we keep popping until the path makes a left turn, which confirms the 
+shape is still convex.*
 
 ### Empirical Data
 
