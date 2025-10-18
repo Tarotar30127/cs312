@@ -329,15 +329,22 @@ After adjusting the base case to properly handle three-point scenarios, the algo
 - Theoretical order of growth: *O(n log n)* 
 - Empirical order of growth (if different from theoretical): 
 
-![img](img.png)
+![core_hull_theo_graph.svg](core_hull_theo_graph.svg)
 
-*Fill me in*
+*This graph shows that the algorithm's observed runtime closely follows the theoretical O(NlogN) performance prediction 
+for smaller input sizes. However, as the input size increases past 20,000, the actual runtime begins to deviate and 
+perform slightly worse than the theoretical model predicts. Overall, the plot confirms that an O(NlogN) model is a good, 
+though not perfect, fit for this algorithm's behavior.*
 
 ## Stretch 1
 
 ### Design Discussion
 
-*Fill me in*
+*I talked to Kyle Mak and Collin Verbanatz about how I selected the Graham scan algorithm for the convex hull. This algorithm 
+works by first finding an anchor point or the point with the lowest y value and then sorting the remaining points by the 
+polar angle they make with this anchor. The algorithm then uses a stack to iteratively build the hull by ensuring every 
+new point maintains a counter-clockwise turn. This method differs from the divide-and-conquer algorithm because divide and conquer
+recursively splits the point set, computes the hulls of the two halves, and then merges those hulls together.*
 
 ### Chosen Convex Hull Implementation Description
 
@@ -354,6 +361,8 @@ After adjusting the base case to properly handle three-point scenarios, the algo
 | 20000 |    68.518 |
 | 40000 |   148.208 |
 | 50000 |   190.899 |
+
+![stretch1_hull_theo_graph.svg](stretch1_hull_theo_graph.svg)
 
 ### Comparison of Chosen Algorithm with Divide-and-Conquer Convex Hull
 
