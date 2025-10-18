@@ -389,9 +389,10 @@ structure designed for this exact purpose.*
 ### Design Experience
 
 *I talked to Kyle Mak and Collin Verbanatz about the different parameters we are going to use to measure the runtime of 
-two different shortest path algorithm implements. I used graph size, graph density meaning how many edges in the graph.
-The more dense is 1.0 and the less densely connected is 0.6. I will test both heap PQ and linear PQ and I predict that the Heap
-PQ will be faster than linear PQ in the sparser graph and high graph size.*
+two different shortest path algorithm implemented. We are using graph size, graph density meaning how many edges in the graph
+as parameters to help measure the efficiency of algorithm. The more dense is 1.0 and the less densely connected is 0.6. 
+I will test both heap PQ and linear PQ and I predict that the Heap PQ will be faster than linear PQ in the sparser graph 
+and high graph size.*
 
 ### Empirical Data
 
@@ -416,7 +417,8 @@ PQ will be faster than linear PQ in the sparser graph and high graph size.*
 | 3000 | 1       | 170.00         | 765.96              |
 | 3500 | 1       | 862.75         | 984.73              |
 
-### Plot![dijkstra_comparison.png](dijkstra_comparison.png)
+### Plot!
+[dijkstra_comparison.png](dijkstra_comparison.png)
 ![dijkstra_comparison_density_0_6.png](dijkstra_comparison_density_0_6.png)
 ![dijkstra_comparison_density_1_0.png](dijkstra_comparison_density_1_0.png)
 ![performance_density_0_6.png](performance_density_0_6.png)
