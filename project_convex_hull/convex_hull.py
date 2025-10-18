@@ -4,16 +4,16 @@ import math
 # you debug your algorithm
 # from plotting import draw_line, draw_hull, circle_point
 
-def find_the_slope(p1: tuple[float, float], p2: tuple[float, float]) -> float:
-    if p2[0] == p1[0]:
-        if p2[1] > p1[1]:
+def find_the_slope(point1: tuple[float, float], point2: tuple[float, float]) -> float:
+    if point2[0] == point1[0]:
+        if point2[1] > point1[1]:
             return math.inf
         else:
             return -math.inf
-    if p2[1] == p1[1]:
+    if point2[1] == point1[1]:
         return 0.0
 
-    return (p2[1] - p1[1]) / (p2[0] - p1[0])
+    return (point2[1] - point1[1]) / (point2[0] - point1[0])
 
 
 def merge(left_hull: list[tuple[float, float]], right_hull: list[tuple[float, float]]) -> list[tuple[float, float]]:
@@ -120,7 +120,7 @@ def merge(left_hull: list[tuple[float, float]], right_hull: list[tuple[float, fl
 
 
 def find_the_hull(sorted_points: list[tuple[float, float]]) -> list[tuple[float, float]]:
-    if len(sorted_points) <= 3:
+    if len(sorted_points) == 1 or len(sorted_points) == 2:
         return sorted_points
     median: int = len(sorted_points) // 2
     left_part = sorted_points[:median]

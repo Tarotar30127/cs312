@@ -20,7 +20,7 @@
 
 ### Design Discussion
 
-*Fill me in*
+*Not all ot the core test passed the first time this was becuase of my base case being 3 and less which should have been 2*
 
 ### Empirical Data - Convex Hull Divide-and-Conquer
 
