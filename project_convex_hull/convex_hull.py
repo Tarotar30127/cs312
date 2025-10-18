@@ -1,8 +1,10 @@
 import math
+import functools
 
 
 # you debug your algorithm
 # from plotting import draw_line, draw_hull, circle_point
+
 
 def find_the_slope(point1: tuple[float, float], point2: tuple[float, float]) -> float:
     if point2[0] == point1[0]:
@@ -115,7 +117,6 @@ def merge(left_hull: list[tuple[float, float]], right_hull: list[tuple[float, fl
     while right_hull[temp_index] != upper_right:
         temp_index = (temp_index + 1) % len_right
         final_hull.append(right_hull[temp_index])
-
     return final_hull
 
 
@@ -133,10 +134,47 @@ def find_the_hull(sorted_points: list[tuple[float, float]]) -> list[tuple[float,
 def compute_hull_dvcq(points: list[tuple[float, float]]) -> list[tuple[float, float]]:
     """Return the subset of provided points that define the convex hull"""
     points.sort(key=lambda p: p[0])
-    final_hull = find_the_hull(points)
+    final_hull: list[tuple[float, float]] = find_the_hull(points)
     return final_hull
+
+
+def orientation(p: tuple[float, float], q: tuple[float, float], r: tuple[float, float]) -> int:
+    val = (q[1] - p[1]) * (r[0] - q[0]) - \
+          (q[0] - p[0]) * (r[1] - q[1])
+    if val == 0: return 0
+    return 1 if val > 0 else 2
+
+
+def distance_sq(p1: tuple[float, float], p2: tuple[float, float]) -> float:
+    return (p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2
+
+
+def compare_angles(anchor_point: tuple[float, float], p1: tuple[float, float], p2: tuple[float, float]) -> int:
+    o = orientation(anchor_point, p1, p2)
+    if o == 0:
+        return 1 if distance_sq(anchor_point, p2) >= distance_sq(anchor_point, p1) else -1
+    elif o == 2:
+        return -1
+    else:
+        return 1
 
 
 def compute_hull_other(points: list[tuple[float, float]]) -> list[tuple[float, float]]:
     """Return the subset of provided points that define the convex hull"""
-    return []
+    anchor_point = min(points, key=lambda p: (p[1], p[0]))
+    anchor_index = points.index(anchor_point)
+    points[0], points[anchor_index] = points[anchor_index], points[0]
+    compare_with_anchor = functools.partial(compare_angles, anchor_point)
+    sorted_points = sorted(points[1:], key=functools.cmp_to_key(compare_with_anchor))
+    if not sorted_points:
+        return [anchor_point]
+    hull_stack = []
+    hull_stack.append(anchor_point)
+    hull_stack.append(sorted_points[0])
+    for i in range(1, len(sorted_points)):
+        new_point = sorted_points[i]
+        while len(hull_stack) > 1 and orientation(hull_stack[-2], hull_stack[-1], new_point) != 2:
+            hull_stack.pop()
+        hull_stack.append(new_point)
+
+    return hull_stack
