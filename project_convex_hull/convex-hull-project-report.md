@@ -375,17 +375,66 @@ shape is still convex.*
 
 #### Algorithmic Differences
 
-*Fill me in*
+*The two algorithms used different approaches to the same problem and arrive at the same time complexity. The Convex hull 
+Divide and Conquer is a recursive algorithm. It worked by splitting the set of points in half then recursively finding 
+the hull for each half and then stitching or merging the two resulting hulls together. The Graham Scan algorithm is an 
+iterative algorithm because it builds the hull in one pass by sweeping around a single anchor point. Then it uses a 
+stack to keep track of the points that are currently part of the hull. The initial step is different for both because the 
+divide and conquer algorithm requires an initial sort by x-coordinate. This is crucial for dividing the set into a left
+and right half. The graham scan requires finding an anchor point or the lowest y-coordinate and then sorting all other 
+points by their polar angle relative to that anchor.*
 
 #### Performance Differences
 
-*Fill me in*
+*For small inputs when it was less than 1000, the Graham Scan was slightly faster than convex hull divide and conquer
+implementation. However, the larger inputs like greater than 10,000, the divide and conquer implementation is faster. 
+The time complexity of both algorithms are O(nlogn) becuase for divide and conquer convex hull the initial sort is 
+O(nlogn). Whereas Graham Scan initial step is Finding the anchor is O(n) then sorting by polar angle is O(nlogn).
+The final stack-based scan is O(n) because since each point is pushed once and can only be popped once. The space 
+complexity of both algorithms are O(n) because divide and conquer convex hull requires space for the recursion call 
+stack which goes O(logn) deep and for storing the intermediate and final hulls created during the merge steps, which 
+is O(n). The Graham Scan space complexity requires storing the sorted list of points O(n) and the stack, which in the 
+worst case will be all n points are on the hull.*
 
 ## Stretch 2
 
-*Fill me in*
+### Design Discussion
+
+*I talked with Kyle Mak and Collin Verbanatz about how we would implement stretch2 and use the Covid 19 country wise csv.
+We are going to analyze the data based on the first months of the year. By sorting by the first 3 months we could create a 
+dataframe focusing on the spread of the disease by location and graph it by month.*
+
+## Graph
+
+![covid_hull_monthly_plots_lat_long.png](covid_hull_monthly_plots_lat_long.png)
+
+## Graph Analysis 
+
+*The 3 graphs above are showing data for different month early in the covid-19 pandemic during January 2020, February 2020
+and March 2020. Each graph shows blue dots which are reported locations by latitude and longitude. The latitude and longitude
+creates a unique location where COVID-19 cases were reported during that specific month. The red polygon is a red line 
+that connects the outermost blue dots and forms a polygon. This is the convex hull and it represents the smallest convex 
+geographic area that contained all reported locations for that month. The red dots are the specific reported locations 
+that define the corners or vertices of the convex hull polygon. From the 3 graphs, people can see number of blue dots 
+increases significantly from January to March. This means that COVID-19 was spreading rapidly to new geographic locations. 
+People can see that over the 3 months the red convex hull generally expanded meaning that the pandemic rapidly expanded.*
+
+![covid_hull_monthly_plots_labeled.png](covid_hull_monthly_plots_labeled.png)
+
+*The 3 graphs above show the data for different months and shows the geographic spread of reported COVID-19 locations 
+for January, February, and March 2020 using convex hulls. From January to March, the number of reported locations increases
+which can be seen wider reporting in there are cases in New Zealand which is further from Australia meaning that covid 19
+spread within one month to New Zealand most like from Australia proving the rapid expansion of Covid-19.*
 
 ## Project Review
 
-*Fill me in*
+*In conclusion, I talked to Kyle and Collin about the project and all we accomplished. I implemented the divide-and-conquer 
+algorithm to compute the convex hull of a list of points. Then I analyzed the theoretical time complexity of my code 
+which was O(nlogn) and space complexity as O(n). I then graphed the results and proved the time and space complexity.
+In stretch 1, I implemented the Graham Scan algorithm which has a similar time complexity as my divide and conquer convex hull
+which was O(nlogn) but both algorithms have a different approach. One works through the list of points respectively splitting 
+then merging while the other involves the polar angle sorting and a stack. Lastly I applied the divide-and-conquer 
+algorithm to a real-world COVID-19 dataset. I visualized the geographic spread over time by plotting monthly convex hulls 
+based on reported locations. The project taught me about the different convex hull algorithms and their application 
+to analyze data.*
 
