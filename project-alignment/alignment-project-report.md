@@ -343,8 +343,8 @@ def align(
     return final_score, aligned_seq1, aligned_seq2					                                        # O(1) constant time
 ```
 
-*The time complexity was O(m*n) because it is controlled by the length of the 2 strings and the nested for loops. There 
-is an outer loop that runs n times and inner loop that runs m times.*
+*The time complexity was O(kn) because it is controlled by the length of the 2 strings and the nested for loops. There 
+is an outer loop that runs n times and inner loop that runs m times and by the banded width.*
 
 #### Space
 
@@ -493,23 +493,22 @@ def align(
 
 | N     | time (ms) |
 |-------|-----------|
-| 100   |           |
-| 1000  |           |
-| 5000  |           |
-| 10000 |           |
-| 15000 |           |
-| 20000 |           |
-| 25000 |           |
-| 30000 |           |
+| 100   | 9         |
+| 300   | 68        |
+| 500   | 206       |
+| 1000  | 769       |
+| 3000  | 7293      |
+| 5000  | 20059     |
+| 10000 | 98281     |
+| 15000 | 301406    |
 
 ### Comparison of Theoretical and Empirical Results - Banded Alignment
 
-- Theoretical order of growth: 
-- Empirical order of growth (if different from theoretical): 
+- Theoretical order of growth: O(kn)
+- Empirical order of growth (if different from theoretical): 0.0047319129599465255
 
-
-![](fill-me-in.png)
-
+![Figure_1.png](Figure_1.png)
+![3rd.png](3rd.png)
 *Fill me in*
 
 ### Relative Performance Of Unrestricted Alignment versus Banded Alignment

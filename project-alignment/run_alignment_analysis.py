@@ -87,7 +87,7 @@ def main(sizes, algorithm, file_name="_runtimes.py", **kwargs):
 
 
 if __name__ == '__main__':
-    sizes = [500, 1000, 1500, 2000, 2500, 3000]
+    sizes = [100, 300, 500, 1000, 3000, 5000, 10000, 15000]
 
     main(sizes=sizes,
          algorithm=align)

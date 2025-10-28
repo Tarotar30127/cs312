@@ -46,16 +46,16 @@ def main(theoretical_big_o, coeff, theoretical_label, table_name, test_name: str
 if __name__ == '__main__':
     # MODIFICATION: The theoretical runtime for m=n=N is O(N*N) or O(N^2)
     def theoretical_big_o(n):
-        return n ** 2
+        return n
 
 
     # MODIFICATION: Fill this in from the output of compute_coefficient.py
-    coeff_align = 4.841313827920842e-07
+    coeff_align = 0.0047319129599465255
 
     main(
         theoretical_big_o=theoretical_big_o,
         coeff=coeff_align,
-        theoretical_label='Theoretical $O(n^2)$',  # Updated label
+        theoretical_label='Theoretical $O(n)$',  # Updated label
         table_name="Alignment",
         test_name='align'
     )
