@@ -632,7 +632,19 @@ Alignment Outcome Comparisons
 
 Sequences and Alignments
 
-*For 2 stretch, the affine gap penalty model when compared to the banded and unbanded is an algorithmic strategy that
+Aligning Seq 1: ATGGCGTGTTTGTTTTTTAT
+Aligning Seq 2: ATGGCGTTTTTGAT
+
+Case 1: Affine Gap (Open=-10, Extend=-2) 
+Score: 41
+ATGGCGTGTTTGTTTTTTAT
+ATGGC------GTTTTTGAT
+Linear Gap (Simulated) (Open=-8, Extend=-8) 
+Score: 26
+ATG-G-CGTGTTTGTTTTTTAT
+TTTTGATATG-GCGTTTTTGAT
+
+*I chose to align ATGGCGTGTTTGTTTTTTAT and ATGGCGTTTTTGAT. For 2 stretch, the affine gap penalty model when compared to the banded and unbanded is an algorithmic strategy that
 is a scoring model that controls how the model penalize gaps by using open and extend costs. The banded and unbanded
 controls how much of the alignment matrix you compute. The unbanded algorithm looks at a full m times n grid while the 
 banded algorithm just looks at a strip or n. The affine gap penalty model is more realistic and produces more meaningful 
@@ -641,7 +653,12 @@ happens in real evolution.*
 
 ##### Chosen Parameters and Better Alignments Discussion
 
-*The change in the chosen parameters in stretch 2 was adding the gap penalty with a start and extend price. Unlike the 
+*From my results of aligning ATGGCGTGTTTGTTTTTTAT and ATGGCGTTTTTGAT, anyone can see that the affine gap penalty the high 
+open or open gap penalty cost of -10 and extending cost or indel penalty of -2 correctly forced the algorithm to create 
+a grouped gap. Whereas the linear gap created TTTTGATATG-GCGTTTTTGAT which is not a valid alignment and scrambles the 
+original sequence order. The dashs created errors because the correct linear model with open_gap_penalty=-8, 
+indel_penalty=-8 would have scattered the gaps becuase there is no cost difference between one large gap and six small 
+gaps.The change in the chosen parameters in stretch 2 was adding the gap penalty with a start and extend price. Unlike the 
 banded and unbanded algorithm which used indel_penalty, the affine gap penalty model implementation used gap_open_penalty.
 A penalty was added at the start of new gap and a small penalty was added when extending. In the banded and unbanded algorithms
 it uses just the indel_penalty which is a smaller penalty that is applied for each character a gap is extended. The 
@@ -656,7 +673,7 @@ and more consolidated gaps.
 talked about the different algorithms and the time and space complexity as well as the dynamic programming. First, for the
 baseline requirements, we coded a unrestricted alignment algorithm. The unrestricted alignment algorithm time and space 
 complexity was O(mn) because it filled an entire m×n matrix. This was seen by the observed data which showed a n^2 growth
-curve that perfectly matched the theoretical model of O(mxn). The next phase was a the banded alignment algorithm which 
+curve that perfectly matched the theoretical model of O(mxn). The next phase was the banded alignment algorithm which 
 optimizes the process by only computing a diagonal band of the matrix. The optimal alignment normally is close to the 
 main diagonal. The banded algorithm improved performance which can be seen in the theoretical time and space complexity 
 of O(kn). The data showed that the observed matched linear growth in runtime which was significantly faster than the 
