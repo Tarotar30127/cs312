@@ -1,4 +1,3 @@
-
 def align(
         seq1: str,
         seq2: str,
@@ -22,7 +21,6 @@ def align(
         :param gap_open_penalty: how much it costs to open a gap. If 0, there is no gap_open penalty
         :param gap: the character to use to represent gaps in the alignment strings
     """
-    penalty: dict = {"sub": 0, "match": 0, "insert_delete": 0}
     row = len(seq2) + 1
     col = len(seq1) + 1
     banded = (banded_width != -1)
@@ -63,16 +61,20 @@ def align(
 
     for i in range(1, row):
         if not banded or i <= banded_width:
-            score = get_val(i - 1, 0)[0] + indel_penalty
-            if i > 1:
-                score += gap_open_penalty
+            up_score, up_dir = get_val(i - 1, 0)
+            if up_dir == "UP":
+                score = up_score + indel_penalty
+            else:
+                score = up_score + indel_penalty + gap_open_penalty
             set_val(i, 0, (score, "UP"))
 
     for j in range(1, col):
         if not banded or j <= banded_width:
-            score = get_val(0, j - 1)[0] + indel_penalty
-            if j > 1:
-                score += gap_open_penalty
+            left_score, left_dir = get_val(0, j - 1)
+            if left_dir == "LEFT":
+                score = left_score + indel_penalty
+            else:
+                score = left_score + indel_penalty + gap_open_penalty
             set_val(0, j, (score, "LEFT"))
 
     for i in range(1, row):
@@ -111,8 +113,8 @@ def align(
             else:
                 set_val(i, j, (min_cost, "LEFT"))
 
-    aligned_seq1 = ""
-    aligned_seq2 = ""
+    aligned_seq1 = []
+    aligned_seq2 = []
     i, j = row - 1, col - 1
 
     final_score, _ = get_val(i, j)
@@ -124,27 +126,23 @@ def align(
         score, direction = get_val(i, j)
 
         if direction == "DIAG":
-            aligned_seq1 = seq1[j - 1] + aligned_seq1
-            aligned_seq2 = seq2[i - 1] + aligned_seq2
-            if seq2[i - 1] == seq1[j - 1]:
-                penalty["match"] += 1
-            else:
-                penalty["sub"] += 1
+            aligned_seq1.append(seq1[j - 1])
+            aligned_seq2.append(seq2[i - 1])
             i -= 1
             j -= 1
         elif direction == "UP":
-            aligned_seq1 = gap + aligned_seq1
-            aligned_seq2 = seq2[i - 1] + aligned_seq2
-            penalty["insert_delete"] += 1
+            aligned_seq1.append(gap)
+            aligned_seq2.append(seq2[i - 1])
             i -= 1
         elif direction == "LEFT":
-            aligned_seq1 = seq1[j - 1] + aligned_seq1
-            aligned_seq2 = gap + aligned_seq2
-            penalty["insert_delete"] += 1
+            aligned_seq1.append(seq1[j - 1])
+            aligned_seq2.append(gap)
             j -= 1
         elif direction == "START":
             break
         elif direction == "NULL":
             break
 
+    aligned_seq1 = "".join(reversed(aligned_seq1))
+    aligned_seq2 = "".join(reversed(aligned_seq2))
     return final_score, aligned_seq1, aligned_seq2

@@ -1,19 +1,22 @@
 from pprint import pprint
 from time import time
 from pathlib import Path
-from alignment import align  # Assumes alignment.py is in the same folder
+
+from alignment import align  # ✅ Use your core_align function
 
 
 def _analyze_alignment(N: int, algorithm, **kwargs):
+    """Runs the alignment for a given input size N and returns runtime."""
     def read_sequence(file: Path) -> str:
         return ''.join(file.read_text().splitlines())
 
-    # Corrected spelling from 'hepatitus' to 'hepatitis'
     seq1 = read_sequence(Path('test_files/bovine_coronavirus.txt'))[:N]
     seq2 = read_sequence(Path('test_files/murine_hepatitus.txt'))[:N]
+
     start = time()
     algorithm(seq1, seq2, **kwargs)
     end = time()
+
     runtime = end - start
     return N, runtime
 
@@ -21,18 +24,16 @@ def _analyze_alignment(N: int, algorithm, **kwargs):
 def _compute_average_runtimes(runtimes):
     groups = {}
     for n, runtime in runtimes:
-        key = n
-        if key not in groups:
-            groups[key] = []
-        groups[key].append((n, runtime))
+        if n not in groups:
+            groups[n] = []
+        groups[n].append(runtime)
 
     return [
         (
             size,
-            # MODIFICATION: Convert to ms (sec * 1000) and round to integer
-            int(round(sum(t for _, t in stats) / len(stats) * 1000, 0))
+            round((sum(times) / len(times)) * 1000, 3)  # convert to ms
         )
-        for size, stats in sorted(groups.items())
+        for size, times in groups.items()
     ]
 
 
@@ -44,50 +45,47 @@ def _print_markdown_table(ave_runtimes, headers):
         '| ' + ' | '.join('-' * len(header) for header in headers) + ' |'
     ]
 
-    rows += (
-        '| ' + ' | '.join(
-            f'{field:<{width}}'
-            for field, width in zip(row, header_widths)
+    for row in ave_runtimes:
+        formatted_row = '| ' + ' | '.join(
+            f'{field:<{width}}' for field, width in zip(row, header_widths)
         ) + ' |'
-        for row in ave_runtimes
-    )
+        rows.append(formatted_row)
 
     print('\n'.join(rows))
 
 
 def main(sizes, algorithm, file_name="_runtimes.py", **kwargs):
+    """Runs timing experiments for each input size."""
     runtimes = []
     for size in sizes:
-        print('Running with size', size)
-        # Reduced to 3 iterations for faster testing, you can increase this
-        for iteration in range(3):
+        print(f'Running with size {size}...')
+        for iteration in range(10):
             n, runtime = _analyze_alignment(size, algorithm, **kwargs)
             runtimes.append((n, runtime))
 
     ave_runtimes = _compute_average_runtimes(runtimes)
 
-    print()
-    print('Copy this markdown table into your report:  ')
-    print()
-
-    # MODIFICATION: Updated headers to 'time (ms)'
+    print("\nCopy this Markdown table into your report:\n")
     _print_markdown_table(
         ave_runtimes,
-        [' N     ', 'time (ms) ']
+        [' N     ', 'Time (ms)']
     )
 
-    # Save runtimes in SECONDS (not ms) for plot_empirical...
-    # The plotting scripts expect seconds, so we re-save the original 'runtimes'
     with open(file_name, 'w') as file:
         print('runtimes = ', end='', file=file)
         pprint(runtimes, file)
 
-    print()
-    print(f'{file_name} written')
+    print(f"\n{file_name} written successfully.\n")
 
 
 if __name__ == '__main__':
-    sizes = [100, 300, 500, 1000, 3000, 5000, 10000, 15000]
+    sizes = [500, 1000, 1500, 2000, 2500, 3000]
 
-    main(sizes=sizes,
-         algorithm=align)
+    main(
+        sizes=sizes,
+        algorithm=align,
+        match_award=-3,
+        sub_penalty=1,
+        indel_penalty=5,
+        banded_width=3
+    )

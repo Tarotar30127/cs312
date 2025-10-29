@@ -9,7 +9,7 @@ from alignment import align  # Assumes alignment.py is in the same folder
 # This coefficient was found for the case where m=n.
 # For m!=n, a more robust coefficient might be derived from a multi-variable regression,
 # but using the given one is a good starting point for a theoretical surface.
-THEORETICAL_COEFFICIENT = 4.841313827920842e-07
+THEORETICAL_COEFFICIENT = 7.247783094644543e-06
 
 
 def read_sequence(file: Path) -> str:
@@ -38,8 +38,8 @@ def main_3d():
     print("Sequences loaded.")
 
     # Define the sizes for m (seq2) and n (seq1)
-    m_sizes = [500, 1000, 1500, 2000, 2500]
-    n_sizes = [500, 1000, 1500, 2000, 2500]
+    m_sizes = [100, 1000, 5000, 10000, 15000, 20000, 25000, 30000]
+    n_sizes = [100, 1000, 5000, 10000, 15000, 20000, 25000, 30000]
 
     # Store empirical results
     empirical_results = []

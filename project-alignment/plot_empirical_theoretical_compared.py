@@ -50,7 +50,7 @@ if __name__ == '__main__':
 
 
     # MODIFICATION: Fill this in from the output of compute_coefficient.py
-    coeff_align = 0.0047319129599465255
+    coeff_align = 7.0159092214372404e-06
 
     main(
         theoretical_big_o=theoretical_big_o,

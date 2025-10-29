@@ -487,82 +487,182 @@ def align(
     return final_score, aligned_seq1, aligned_seq2					                                        # O(1) constant space
 ```
 
-*The space complexity is O(n+m) and is controlled by the matrix which is controlled by the n rows and m columns.*
+*The space complexity is O(kn) and is controlled by the matrix which is controlled by the n.*
 
 ### Empirical Data - Banded Alignment
 
-| N     | time (ms) |
+| N     | Time (ms) |
 |-------|-----------|
-| 100   | 9         |
-| 300   | 68        |
-| 500   | 206       |
-| 1000  | 769       |
-| 3000  | 7293      |
-| 5000  | 20059     |
-| 10000 | 98281     |
-| 15000 | 301406    |
+| 100   | 0.885     |
+| 1000  | 7.026     |
+| 5000  | 34.81     |
+| 10000 | 70.362    |
+| 15000 | 104.237   |
+| 20000 | 140.07    |
+| 25000 | 176.263   |
+| 30000 | 213.255   |
 
 ### Comparison of Theoretical and Empirical Results - Banded Alignment
 
 - Theoretical order of growth: O(kn)
-- Empirical order of growth (if different from theoretical): 0.0047319129599465255
+- Empirical order of growth (if different from theoretical): 7.247783094644543e-06
 
-![Figure_1.png](Figure_1.png)
-![3rd.png](3rd.png)
-*Fill me in*
+![core_graph.png](core_graph.png)
+
+*I found that my theoretical growth of O(kn) matched my observed and my obverse was a bit faster on average.*
 
 ### Relative Performance Of Unrestricted Alignment versus Banded Alignment
 
-*Fill me in*
+*The Banded alignment was faster by lots of MS because it cut out the corners where it is unlikely that the shorted 
+alignment would be found. The Banded alignment had a time complexity of O(kn) and grew linearly whereas the unbanded 
+algorithm ran at the O(n+m) time complexity. The space complexity of the unbanded took up more space because it stored a 
+matrix by (m*n) whereas the banded matrix only looked at a band or strip on the matrix.*
 
 
 ## Stretch 1
 
 ### Design Experience
 
-*Fill me in*
+*For my stretch 1 design experience, I talked to Kyle Mak and Collin Verbanatz about the problem which is we need to find
+the culprit behind the cage being open and allowing the kid and his dog in. Collin said he thinks it is the rat but I 
+disagree and I think it is the chimp. I think it is the chimp because the chimps have a history of getting out of the cage.*
 
 ### Code
 
 ```python
-# Fill me in
+def main():
+    sequences = {}
+    current_species = None
+    with open("lct_exon8.txt") as file:
+        lines = file.readlines()
+        for line in lines:
+            line = line.strip()
+            if not line:
+                continue
+            if line.startswith(">"):
+                header_part = line.split()[0][1:]
+                parts = header_part.split('_')
+                current_species = parts[1]
+                sequences[current_species] = ""
+            elif current_species:
+                sequences[current_species] += line
+
+    unknown_seq = sequences.pop('unknown')
+    suspect_list = sequences
+    best_match_species = None
+    lowest_score = float('inf')
+
+    for species, species_seq in suspect_list.items():
+        score, _, _ = alignment.align(species_seq, unknown_seq)
+        print(f"Score for {species}: {score}")
+
+        if score < lowest_score:
+            lowest_score = score
+            best_match_species = species
+    species_map = {
+        'hg38': 'Human - Homo sapiens',
+        'panTro4': 'Chimp - Pan troglodytes',
+        'rheMac3': 'Rhesus macque - Macaca mulatta',
+        'canFam3': 'Dog - Canis lupus familiaris',
+        'rn5': 'Rat - Rattus norvegicus',
+        'mm10': 'Mouse - Mus musculus'
+    }
+
+    if best_match_species:
+        culprit_name = species_map.get(best_match_species, "an unknown species")
+        print(f"The unknown sample is most similar to: **{best_match_species}** ({culprit_name})")
+        print(f"It had the lowest alignment score: **{lowest_score}**")
+        print(f"\nConclusion: The hair fragment belongs to a **{culprit_name}**.")
+
+
+if __name__ == '__main__':
+    main()
 ```
 
 ### Alignment Scores
 
-*Fill me in*
+*
+Score for hg38: -3113
+Score for panTro4: -3097
+Score for rheMac3: -3162
+Score for canFam3: -3111
+Score for rn5: -4343
+Score for mm10: -3835
+*
+*I found that the hair fragment belonged to the rat because it had the lowest alignment score at -4343.*
+
 
 ## Stretch 2
 
 ### Design Experience
 
-*Fill me in*
+*I talked to Kyle Mak and Collin Verbanatz about the affine gap penalty model and how we were going to implement it. In 
+the linear penalty it is a fixed price for every single gap character whereas in the affine gap penalty model it is a
+big price at the start of the gap and then a small fee to extend it. We needed a data structure to remember the gap and add
+the open gap penalty.*
 
 ### Empirical Data - Using Affine Penalties
 
-| N    | time (ms) |
+| N    | Time (ms) |
 |------|-----------|
-| 500  |           |
-| 1000 |           |
-| 1500 |           |
-| 2000 |           |
-| 2500 |           |
-| 3000 |           |
+| 500  | 3.815     |
+| 1000 | 6.913     |
+| 1500 | 10.263    |
+| 2000 | 13.777    |
+| 2500 | 17.146    |
+| 3000 | 20.891    |
+
+![stretch2.png](stretch2.png)
 
 ### Empirical Outcome Comparisons
 
-*Fill me in*
+*I found that the O(kn) time complexity matches the observed of linear growth when k is constant is supported by the
+data. The plot of the observed runtimes forms dots that match the theoretical time complexity. The affine 
+gap penalty logic added a constant amount of work inside the inner loop which did not change the time complexity.
+I found that using the affine gap penalty model the coefficent is 7.0159092214372404e-06 which was close to the banded 
+coefficient.*
 
 ### Alignment Outcome Comparisons
 
 ##### Sequences and Alignments
 
-*Fill me in*
+*Here's the content for those sections, filled out based on your provided information.
+
+Alignment Outcome Comparisons
+
+Sequences and Alignments
+
+*For 2 stretch, the affine gap penalty model when compared to the banded and unbanded is an algorithmic strategy that
+is a scoring model that controls how the model penalize gaps by using open and extend costs. The banded and unbanded
+controls how much of the alignment matrix you compute. The unbanded algorithm looks at a full m times n grid while the 
+banded algorithm just looks at a strip or n. The affine gap penalty model is more realistic and produces more meaningful 
+alignments. The affine gap penalty model correctly sees that A-T-G-C- is much worse than A----G. It grouping gaps which is what 
+happens in real evolution.*
 
 ##### Chosen Parameters and Better Alignments Discussion
 
-*Fill me in*
+*The change in the chosen parameters in stretch 2 was adding the gap penalty with a start and extend price. Unlike the 
+banded and unbanded algorithm which used indel_penalty, the affine gap penalty model implementation used gap_open_penalty.
+A penalty was added at the start of new gap and a small penalty was added when extending. In the banded and unbanded algorithms
+it uses just the indel_penalty which is a smaller penalty that is applied for each character a gap is extended. The 
+affine gap penalty model produces more realistic alignments. For example, the linear model treats a single gap of 4 ----
+as having the same cost as four single gaps - - - -. Whereas the affine gap penalty model would group gaps together because
+mutations often happen as a single insertion or deletion event. The affine gap penalty model favors alignments with fewer 
+and more consolidated gaps.
 
 ## Project Review
 
-*Fill me in*
+*In conclusion, I talked with Kyle Mak and Collin Verbanatz about all that we learned doing the alignment algorithm. We 
+talked about the different algorithms and the time and space complexity as well as the dynamic programming. First, for the
+baseline requirements, we coded a unrestricted alignment algorithm. The unrestricted alignment algorithm time and space 
+complexity was O(mn) because it filled an entire m×n matrix. This was seen by the observed data which showed a n^2 growth
+curve that perfectly matched the theoretical model of O(mxn). The next phase was a the banded alignment algorithm which 
+optimizes the process by only computing a diagonal band of the matrix. The optimal alignment normally is close to the 
+main diagonal. The banded algorithm improved performance which can be seen in the theoretical time and space complexity 
+of O(kn). The data showed that the observed matched linear growth in runtime which was significantly faster than the 
+baseline's n^2 growth. For stretch 1, the alignment algorithm was used to identify an unknown hair sample from its DNA 
+sequence in lct_exon8.txt. By aligning the unknown sequence against a list of known species, the program successfully 
+identified the Rat (rn5) as the source with the lowest alignment score of -4343. Lastly, I implemented the affine gap 
+penalty model which was used to separate and get more realistic penalties for opening a gap and extending a gap. 
+This allows the algorithm to produce more correct alignments by favoring consolidated gaps.*
+
