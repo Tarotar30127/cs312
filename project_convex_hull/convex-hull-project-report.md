@@ -150,8 +150,10 @@ def compute_hull_dvcq(points: list[tuple[float, float]]) -> list[tuple[float, fl
     final_hull: list[tuple[float, float]] = find_the_hull(points)                       # O(n log n) see above
     return final_hull                                                                   # O(1) return
 ```
-*My theoretical is O(n log n) according to the master theorem a = 2, b = 2 such that T(n)=2T(n/2)+O(n) then when we put 
-in log turns into this O(n log n).*
+*My theoretical is O(n log n) according to the master theorem a = 2, b = 2, d = 1 such that T(n)=2T(n/2)+O(n) then when we put 
+in log turns into this O(n log n). This is because A is the number of sub problems and I create 2 sub problems the left and the right
+Then b is the size of each sub problem and the size is the list in half therefore b = 2. The rest of the function minus the divide
+and conquer is linear time or O(n) which means that d = 1.*
  
 #### Space
 

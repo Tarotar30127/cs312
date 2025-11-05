@@ -136,8 +136,8 @@ print("-" * 30)
 # --- Case 1: Affine Gap Penalty (Your "gap-aware" algorithm) ---
 # High cost to open a gap, low cost to extend it.
 # This encourages grouping gaps together.
-OPEN_1 = -10
-EXTEND_1 = -2
+OPEN_1 = 0
+EXTEND_1 = -3
 
 print(f"--- Case 1: Affine Gap (Open={OPEN_1}, Extend={EXTEND_1}) ---")
 score1, align1_1, align2_1 = align_affine(S1, S2, MATCH_SCORE, MISMATCH_PENALTY, OPEN_1, EXTEND_1)

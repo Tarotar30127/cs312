@@ -599,7 +599,7 @@ Score for mm10: -3835
 *I talked to Kyle Mak and Collin Verbanatz about the affine gap penalty model and how we were going to implement it. In 
 the linear penalty it is a fixed price for every single gap character whereas in the affine gap penalty model it is a
 big price at the start of the gap and then a small fee to extend it. We needed a data structure to remember the gap and add
-the open gap penalty.*
+the open gap penalty. We talked about how we would compare the high and low gap penalty and create new sequences to test.*
 
 ### Empirical Data - Using Affine Penalties
 
@@ -626,9 +626,13 @@ coefficient.*
 
 ##### Sequences and Alignments
 
-*Here's the content for those sections, filled out based on your provided information.
+*For the alignment and sequence, I created 2 new sequences to test. I used a long sequence and smaller sequence to see how 
+each model handles gaps. This test case was designed to help evaluate how different gap penalty models would handle a 
+significant deletion in one sequence. The longer sequence is ATGGCGTGTTTGTTTTTTAT and contains an extra GTGTTT segment 
+that is not found in the shorter ATGGCGTTTTTGAT. The resulting alignments shows the difference between affine and linear 
+gap scoring*
 
-Alignment Outcome Comparisons
+### Alignment Outcome Comparisons
 
 Sequences and Alignments
 
@@ -639,10 +643,16 @@ Case 1: Affine Gap (Open=-10, Extend=-2)
 Score: 41
 ATGGCGTGTTTGTTTTTTAT
 ATGGC------GTTTTTGAT
+
 Linear Gap (Simulated) (Open=-8, Extend=-8) 
 Score: 26
 ATG-G-CGTGTTTGTTTTTTAT
 TTTTGATATG-GCGTTTTTGAT
+
+Linear Gap (Open=0, Extend=-3)
+Score: 61
+ATGGCGTGTTTGTTTTTTAT
+ATGGCGT-T-T-T-T-G-AT
 
 *I chose to align ATGGCGTGTTTGTTTTTTAT and ATGGCGTTTTTGAT. For 2 stretch, the affine gap penalty model when compared to the banded and unbanded is an algorithmic strategy that
 is a scoring model that controls how the model penalize gaps by using open and extend costs. The banded and unbanded
