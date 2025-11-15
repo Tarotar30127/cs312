@@ -2,6 +2,7 @@ import math
 
 from utils import score_tour
 
+
 def assert_valid_tour(edges, tour):
     """
     Length is number of vertices
@@ -14,5 +15,6 @@ def assert_valid_tour(edges, tour):
 
 
 def assert_valid_tours(edges, stats):
+    assert len(stats) > 0
     for stat in stats:
         assert_valid_tour(edges, stat.tour)
