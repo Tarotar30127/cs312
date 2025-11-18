@@ -1,7 +1,6 @@
 import math
 import matplotlib.pyplot as plt
-from _greedy_runtimes import runtimes  # Imports from _greedy_tour_runtimes.py
-
+from _backtracking_runtimes import runtimes  # Imports from _greedy_tour_runtimes.py
 
 def theoretical_big_o(n):
     """
@@ -9,8 +8,7 @@ def theoretical_big_o(n):
     """
     if n <= 0:
         return 1
-    return n ** 2.5
-
+    return math.factorial(n)
 
 def compute_coefficient(observed_performance, theoretical_order_func):
     """
@@ -18,13 +16,12 @@ def compute_coefficient(observed_performance, theoretical_order_func):
     """
     coeffs = []
     for n, time_ms in observed_performance:
-        if n < 10:  # Filter out very small N where model is unstable
-            continue
+        if n < 10: # Filter out very small N where model is unstable
+            continue 
         theory = theoretical_order_func(n)
         if theory > 0:
             coeffs.append(time_ms / theory)
     return coeffs
-
 
 def get_n_values_for_coeffs(observed_performance):
     """
@@ -51,7 +48,7 @@ def main():
 
     # This is a bit of a hack, but matches the compute_coefficient filter
     n_values_for_plot = [n for n, _ in runtimes if n >= 10]
-
+    
     # We must also get the *actual* coefficients, not re-calculate
     coeffs_for_plot = [time_ms / theoretical_big_o(n) for n, time_ms in runtimes if n >= 10]
 
@@ -63,11 +60,11 @@ def main():
     ax1.plot(xlim, [coeff, coeff], ls=':', c='k', label=f'Avg. c = {coeff:.2e}')
     ax1.set_xlim(xlim)
     ax1.set_title('Coefficient (c = time / N!) Stability')
-    ax1.set_xlabel('Problem Size (N)')
+    ax1.set_xlabel('Problem Size (N cities)')
     ax1.set_ylabel('Computed Coefficient (c)')
     ax1.legend()
-    fig1.savefig('Emp_greedy_coefficient_stability.svg')
-    print("Saved 'Emp_greedy_coefficient_stability.svg'")
+    fig1.savefig('tsp_coefficient_stability.svg')
+    print("Saved 'tsp_coefficient_stability.svg'")
 
     # --- Plot theoretical vs observed ---
     print("Plotting observed vs. theoretical runtime...")
@@ -83,22 +80,22 @@ def main():
     ax2 = fig2.add_subplot(111)
 
     ax2.scatter(all_n, observed_times, marker='o', c='C0', label='Observed Runtimes', alpha=0.7)
-    ax2.plot(unique_sorted_n, predicted_times, c='gray', ls=':', lw=2,
+    ax2.plot(unique_sorted_n, predicted_times, c='gray', ls=':', lw=2, 
              marker='o', markersize=8,
-             label=f'Predicted O(n^2.5))')
+             label=f'Predicted O(N!))')
 
     ax2.legend()
-    ax2.set_xlabel('Problem Size (n)')
+    ax2.set_xlabel('Problem Size (N cities)')
     ax2.set_ylabel('Runtime (ms)')
-    ax2.set_title('Runtime for O(n^2.5) Greedy')
-
+    ax2.set_title('Runtime for O(N!) Backtracking TSP')
+    
     # --- MODIFICATION: Log scale lines removed ---
-    #ax2.set_xscale('log')
-    #ax2.set_yscale('log')
+    ax2.set_xscale('log')
+    ax2.set_yscale('log')
     ax2.grid(True, which="both", ls="--", alpha=0.5)
 
-    fig2.savefig('Emp_greedy_runtime_graph_core_th.svg')  # Saved as a new file
-    print("Saved 'Emp_greedy_runtime_graph_linear.svg'")
+    fig2.savefig('tsp_runtime_graph_core_th.svg') # Saved as a new file
+    print("Saved 'tsp_runtime_graph_linear.svg'")
 
     plt.show()
 
