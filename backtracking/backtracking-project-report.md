@@ -446,7 +446,7 @@ def backtracking_bssf(edges: list[list[float]], timer: Timer) -> list[SolutionSt
 ```
 *The Time Complexity was O(n!) which was the same as regular Backtracking*
 
-![Time_V_Solution.png](Time_V_Solution.png)
+![tsp_plot_dots_zoomed.png](tsp_plot_dots_zoomed.png)
 
 *This plot compares the solution cost for each algorithm over a 60-second runtime on the same graph (N=50). The random 
 tour algorithm performs the worst becuase it finds a single solution almost instantly but it doesn't find the best solution
@@ -469,40 +469,36 @@ The n_leaves_covered counts the total number of unique and complete tours or nod
 and evaluated. The fraction_leaves_covered represents the tiny percentage of the total possible solutions which is (N−1)!
 that the algorithm managed to explore.*
 
-
-| N   | reduction | time (ms) |
-|-----|-----------|-----------|
-| 5   | 0         |           |
-| 10  | 0         |           |
-| 15  | 0         |           |
-| 20  | 0         |           |
-| 25  | 0         |           |
-| 30  | 0         |           |
-| 35  | 0         |           |
-| 40  | 0         |           |
-| 45  | 0         |           |
-| 50  | 0         |           |
-
-| N   | reduction | time (ms) |
-|-----|-----------|-----------|
-| 5   | 0         |           |
-| 10  | 0         |           |
-| 15  | 0         |           |
-| 20  | 0         |           |
-| 25  | 0         |           |
-| 30  | 0         |           |
-| 35  | 0         |           |
-| 40  | 0         |           |
-| 45  | 0         |           |
-| 50  | 0         |           |
 ### Cut Tree
 
-*Fill me in*
+*The cuttree class estimates the percentage of the (N−1)! search space explored by tracking pruned branches within the 
+tree. When the algorithm discards a partial path, the cut method traverses this tree to the specific node and ensures 
+through redundancy checks that this branch hasn't already been counted. Once a unique cut point is identified at depth,
+the class calculates the number of skipped solutions using the factorial of the remaining cities. This value is then 
+put back up the tree to the root and updated the count of cut leaves. Lastly, the overall coverage is determined by 
+dividing this total count of pruned leaves by the total number of possible tours and yielding a completion fraction 
+between 0.0 and 1.0.*
 
 ### Plots 
 
-*Fill me in*
+![stretch2_plots.png](stretch2_plots.png)
+
+*The graph above shows the vertical alignment of points at 60. The Nodes Expanded count drops as the problems get larger
+because the calculations required is reduced as the matrices requires significantly more CPU processing power per node. 
+This creates a physical limit where the computer cannot process as many complex nodes within that fixed window. 
+The Fraction Leaves Covered chart shows a shift from 100% completion on small problems to nearly 0% on large ones. 
+This drop shows the exponential growth of the search space O(N!). This proves that once the problem hits the time limit,
+the algorithm has only found a small part of possible solutions.*
 
 ## Project Review
 
-*Fill me in*
+*In conclusion, I reviewed this backtracking project with Kyle and Collin. We talked about all we did for the project and what 
+we learned. This project we successfully explored the Traveling Salesperson Problem by implementing and analyzing the 
+Greedy, Basic Backtracking, and BSSF-enhanced Backtracking algorithms. The Greedy approach demonstrated O(n^4) and
+providing fast sub-optimal solutions. The Backtracking algorithm showed a time complexity of O(N!) exponential growth
+and hit a wall around N=15 where the 60-second time limit prevented a close to infinite search. Then we used the Greedy 
+solution as an initial Best Solution So Far (BSSF) significantly improved performance by enabling pruning of high-cost 
+branches early in the search tree. We implemented the CutTree to visualize the dramatic drop in search space coverage
+from 100% to near 0% as problem magnitude increased. The empirical data validated the theoretical complexity models and
+proving that while exact solutions are intractable for large N, backtracking algorithm offers a balance between runtime 
+and solution quality.*

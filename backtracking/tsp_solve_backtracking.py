@@ -156,48 +156,62 @@ def backtracking(edges: list[list[float]], timer: Timer) -> SolutionStats | Solu
 
 def backtracking_bssf(edges: list[list[float]], timer: Timer) -> list[SolutionStats]:
     num_nodes = len(edges)
+    cut_tree = CutTree(num_nodes)
+    max_queue_size = 1
+    n_nodes_expanded = 0
+    n_nodes_pruned = 0
+    n_leaves_covered = 0
+    fraction_leaves_covered = 0.0
+
     greedy_solution_list = greedy_tour(edges, timer)
+
     if greedy_solution_list:
         initial_bssf = greedy_solution_list[-1]
-        bssf = SolutionStats(
-            tour=initial_bssf.tour,
-            score=initial_bssf.score,
-            time=initial_bssf.time,
-            max_queue_size=initial_bssf.max_queue_size,
-            n_nodes_expanded=initial_bssf.n_nodes_expanded,
-            n_nodes_pruned=initial_bssf.n_nodes_pruned,
-            n_leaves_covered=initial_bssf.n_leaves_covered,
-            fraction_leaves_covered=initial_bssf.fraction_leaves_covered
-        )
+        best_tour = initial_bssf.tour
+        best_score = initial_bssf.score
+        best_time = initial_bssf.time
     else:
-        bssf = SolutionStats(
-            tour=[],
-            score=math.inf,
-            time=timer.time(),
-            max_queue_size=1,
-            n_nodes_expanded=0,
-            n_nodes_pruned=0,
-            n_leaves_covered=0,
-            fraction_leaves_covered=0.0
-        )
+        best_tour = []
+        best_score = math.inf
+        best_time = timer.time()
+
+    bssf = SolutionStats(
+        tour=best_tour,
+        score=best_score,
+        time=best_time,
+        max_queue_size=max_queue_size,
+        n_nodes_expanded=n_nodes_expanded,
+        n_nodes_pruned=n_nodes_pruned,
+        n_leaves_covered=n_leaves_covered,
+        fraction_leaves_covered=fraction_leaves_covered
+    )
 
     stack = [(0, 0.0, 0)]
     path = [0]
     visited = {0}
 
-    bssf.max_queue_size = max(1, bssf.max_queue_size)
+    max_queue_size = max(1, max_queue_size)
 
     while stack:
-        bssf.max_queue_size = max(bssf.max_queue_size, len(stack))
+        max_queue_size = max(max_queue_size, len(stack))
 
         if timer.time_out():
             bssf.time = timer.time()
+            bssf.max_queue_size = max_queue_size
+            bssf.n_nodes_expanded = n_nodes_expanded
+            bssf.n_nodes_pruned = n_nodes_pruned
+            bssf.n_leaves_covered = n_leaves_covered
+            bssf.fraction_leaves_covered = cut_tree.fraction_leaves_covered()
             return [bssf]
 
         current_node, current_cost, neighbor_index = stack[-1]
 
+        if neighbor_index == 0:
+            n_nodes_expanded += 1
+
         if current_cost >= bssf.score:
-            bssf.n_nodes_pruned += 1
+            n_nodes_pruned += 1
+            cut_tree.cut(path)
             stack.pop()
             visited.remove(current_node)
             path.pop()
@@ -206,20 +220,22 @@ def backtracking_bssf(edges: list[list[float]], timer: Timer) -> list[SolutionSt
         found_next_node = False
         for i in range(neighbor_index, num_nodes):
             neighbor = i
-            cost_to_neighbor = edges[current_node][neighbor]
-
             stack[-1] = (current_node, current_cost, i + 1)
 
-            if neighbor not in visited and cost_to_neighbor != math.inf:
+            cost_to_neighbor = edges[current_node][neighbor]
 
+            if neighbor not in visited and cost_to_neighbor != math.inf:
                 new_cost = current_cost + cost_to_neighbor
 
                 if new_cost >= bssf.score:
-                    bssf.n_nodes_pruned += 1
+                    n_nodes_pruned += 1
+                    cut_tree.cut(path + [neighbor])
                     continue
 
                 if len(path) + 1 == num_nodes:
-                    bssf.n_nodes_expanded += 1
+                    n_leaves_covered += 1
+                    cut_tree.cut(path + [neighbor])
+
                     cost_to_start = edges[neighbor][0]
 
                     if cost_to_start != math.inf:
@@ -229,17 +245,22 @@ def backtracking_bssf(edges: list[list[float]], timer: Timer) -> list[SolutionSt
                             bssf.tour = path.copy() + [neighbor]
                             bssf.score = total_cost
                             bssf.time = timer.time()
-
                 else:
                     visited.add(neighbor)
                     path.append(neighbor)
                     stack.append((neighbor, new_cost, 0))
                     found_next_node = True
                     break
+
         if not found_next_node:
             stack.pop()
             visited.remove(current_node)
             path.pop()
 
     bssf.time = timer.time()
+    bssf.max_queue_size = max_queue_size
+    bssf.n_nodes_expanded = n_nodes_expanded
+    bssf.n_nodes_pruned = n_nodes_pruned
+    bssf.n_leaves_covered = n_leaves_covered
+    bssf.fraction_leaves_covered = 1.0
     return [bssf]
