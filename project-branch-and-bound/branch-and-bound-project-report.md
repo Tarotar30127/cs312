@@ -646,10 +646,9 @@ converges on the optimal solution and prunes the search space much faster than t
 
 *I talked with Kyle Mak and Collin V about the project and all that we learned. In this project, we learned the 
 effectiveness of the Branch and Bound algorithm in solving the Traveling Salesperson Problem by utilizing matrix 
-reduction to establish lower bounds for aggressive pruning. Through theoretical and empirical analysis, I observed that 
-while the worst-case time complexity remains exponential (O(n34n)). By graphing the search space coverage showed that 
+reduction to establish lower bounds for aggressive pruning. By graphing the search space coverage showed that 
 Branch and Bound prunes sections of the tree much earlier than standard Depth-First Search which resulted in 
-significantly faster convergence on optimal solutions. Implementing "Smart" Branch and Bound shifted the strategy from 
+significantly faster convergence on optimal solutions. Implementing Smart Branch and Bound shifted the strategy from 
 a stack-based approach to a Best-First Search using a priority queue and used a normalized cost to balance exploration 
 depth with path quality. I learned that normalizing the lower bound by depth is crucial to prevent the priority queue 
 from reverting to a breadth-first search behavior and ensuring the algorithm finds valid tours quickly to update the 
