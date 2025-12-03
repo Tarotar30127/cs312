@@ -570,6 +570,12 @@ between 0.0 and 1.0. We discussed we need to track score, time, and nodes to cre
 
 ![stretch1_full_analysis.png](stretch1_full_analysis.png)
 
+*The Solution Quality graph confirms that the Branch and Bound algorithm and dfs successfully finds the same optimal tour 
+cost 2.9 and Branch and Bound finds it fast after aggressive pruning. The Max Queue Size plot shows the space complexity
+increases to 30 to store the matrix whereas DFS maintains a linear memory size  of around 9 by only storing the current 
+path. The Edge Probability graph shows both algorithms following similar downward trends which show that as each algorithm
+prunes the search space. Both correctly converge on the same set of high probability edges that make up the optimal tour.*
+
 ![stretch1_graph.png](stretch1_graph.png)
 
 *This plot compares the efficiency of your DFS and Branch and Bound algorithms by tracking the fraction of the total 
@@ -583,7 +589,11 @@ search space in whereas DFS is stuck performing a near-exhaustive search.*
 
 ### Design Experience
 
-*I talked to Kyle Mak and Collin V about stretch 2. We read the instructions *
+*I talked to Kyle Mak and Collin V about stretch 2. We read the instructions and talked about how we were going to implement
+the priority queue. We talked about using the lower bound as the priority key and creating a metric that balances low 
+cost with high depth to encourage reaching leaf nodes quickly while favoring good paths. This approach effectively 
+combines the ability to prune bad branches with the speed of finding valid solutions early to update your Best So Far 
+BSSF score.*
 
 ### Selected PQ Key
 
