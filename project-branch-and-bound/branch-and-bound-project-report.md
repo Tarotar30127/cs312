@@ -522,14 +522,14 @@ def branch_and_bound(edges: list[list[float]], timer: Timer) -> list[SolutionSta
 
 ### Empirical Data
 
-| N   | Seed | Solution | time (ms) |
-|-----|------|----------|-----------|
-| 5   |      |          |           |
-| 10  |      |          |           |
-| 15  |      |          |           |
-| 20  |      |          |           |
-| 30  |      |          |           |
-| 50  |      |          |           |
+| N  | Seed | Solution | time (ms)       |
+|----|------|----------|-----------------|
+| 5  | 40   | 2.39     | 0.4             |
+| 10 | 40   | 3.43     | 123.27          |
+| 15 | 40   | 3.67     | 34951.68        |
+| 20 | 40   | 4.53     | > 120000 (T.O.) |
+| 30 | 40   | 5.91     | > 120000 (T.O.) |
+| 50 | 40   | 7.67     | > 120000 (T.O.) |
 
 ### Comparison of Theoretical and Empirical Results
 
@@ -568,15 +568,22 @@ between 0.0 and 1.0. We discussed we need to track score, time, and nodes to cre
 
 ### Search Space Over Time
 
-![Plot demonstrating search space explored over time]()
+![stretch1_full_analysis.png](stretch1_full_analysis.png)
 
-*Fill me in*
+![stretch1_graph.png](stretch1_graph.png)
+
+*This plot compares the efficiency of your DFS and Branch and Bound algorithms by tracking the fraction of the total 
+search tree each method covers by visiting or pruning nodes. The orange line shows your Branch and Bound algorithm achieved
+73.2% coverage which shows that the tree being pruned by the cost bounds and limits. While the blue DFS line stays nearly 
+flat at 7.3% which shows that standard backtracking approach is forced to explore the tree incrementally and cannot rule 
+out large suboptimal sections as quickly. This shows the Branch and Bound algorithm eliminates the majority of the 
+search space in whereas DFS is stuck performing a near-exhaustive search.*
 
 ## Stretch 2
 
 ### Design Experience
 
-*Fill me in*
+*I talked to Kyle Mak and Collin V about stretch 2. We read the instructions *
 
 ### Selected PQ Key
 

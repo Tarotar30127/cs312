@@ -51,5 +51,5 @@ if __name__ == '__main__':
         branch_and_bound,
         n_values=[5, 10, 15, 20, 30, 50],  # Warning: 30+ will likely timeout for exact B&B
         base_seed=40,
-        timeout= 1200  # Stop after 10 seconds per N
+        timeout= 120  # Stop after 10 seconds per N
     )

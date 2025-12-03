@@ -150,10 +150,12 @@ def dfs(edges, timer):
     n_leaves_covered = 0
     fraction_leaves_covered = 0.0
 
+    results = []
     greedy_solution_list = greedy_tour(edges, timer)
 
     if greedy_solution_list:
         initial_bssf = greedy_solution_list[-1]
+        results.append(initial_bssf)
         best_tour = initial_bssf.tour
         best_score = initial_bssf.score
         best_time = initial_bssf.time
@@ -161,7 +163,6 @@ def dfs(edges, timer):
         best_tour = []
         best_score = math.inf
         best_time = timer.time()
-
     bssf = SolutionStats(
         tour=best_tour,
         score=best_score,
@@ -183,13 +184,19 @@ def dfs(edges, timer):
         max_queue_size = max(max_queue_size, len(stack))
 
         if timer.time_out():
-            bssf.time = timer.time()
-            bssf.max_queue_size = max_queue_size
-            bssf.n_nodes_expanded = n_nodes_expanded
-            bssf.n_nodes_pruned = n_nodes_pruned
-            bssf.n_leaves_covered = n_leaves_covered
-            bssf.fraction_leaves_covered = cut_tree.fraction_leaves_covered()
-            return [bssf]
+            # Create a final snapshot
+            final_stat = SolutionStats(
+                tour=bssf.tour,
+                score=bssf.score,
+                time=timer.time(),
+                max_queue_size=max_queue_size,
+                n_nodes_expanded=n_nodes_expanded,
+                n_nodes_pruned=n_nodes_pruned,
+                n_leaves_covered=n_leaves_covered,
+                fraction_leaves_covered=cut_tree.fraction_leaves_covered()
+            )
+            results.append(final_stat)
+            return results
 
         current_node, current_cost, neighbor_index = stack[-1]
 
@@ -232,6 +239,18 @@ def dfs(edges, timer):
                             bssf.tour = path.copy() + [neighbor]
                             bssf.score = total_cost
                             bssf.time = timer.time()
+
+                            new_stat = SolutionStats(
+                                tour=bssf.tour,
+                                score=bssf.score,
+                                time=bssf.time,
+                                max_queue_size=max_queue_size,
+                                n_nodes_expanded=n_nodes_expanded,
+                                n_nodes_pruned=n_nodes_pruned,
+                                n_leaves_covered=n_leaves_covered,
+                                fraction_leaves_covered=cut_tree.fraction_leaves_covered()
+                            )
+                            results.append(new_stat)
                 else:
                     visited.add(neighbor)
                     path.append(neighbor)
@@ -243,14 +262,7 @@ def dfs(edges, timer):
             stack.pop()
             visited.remove(current_node)
             path.pop()
-
-    bssf.time = timer.time()
-    bssf.max_queue_size = max_queue_size
-    bssf.n_nodes_expanded = n_nodes_expanded
-    bssf.n_nodes_pruned = n_nodes_pruned
-    bssf.n_leaves_covered = n_leaves_covered
-    bssf.fraction_leaves_covered = 1.0
-    return [bssf]
+    return results
 
 
 class MatrixClass:
@@ -349,9 +361,14 @@ class MatrixClass:
 def branch_and_bound(edges: list[list[float]], timer: Timer) -> list[SolutionStats]:
     n = len(edges)
     initial_matrix = [row[:] for row in edges]
+    cut_tree = CutTree(n)
+
+    results = []
     greedy_solutions = greedy_tour(edges, timer)
+
     if greedy_solutions:
         initial_best = greedy_solutions[-1]
+        results.append(initial_best)
         bssf = initial_best.score
         best_solution_path = initial_best.tour
     else:
@@ -376,7 +393,9 @@ def branch_and_bound(edges: list[list[float]], timer: Timer) -> list[SolutionSta
         current_state = stack.pop()
         if current_state.lower_bound >= bssf:
             pruned += 1
+            cut_tree.cut(current_state.path)
             continue
+
         if not current_state.unvisited:
             last_city = current_state.path[-1]
             start_city = current_state.path[0]
@@ -387,7 +406,20 @@ def branch_and_bound(edges: list[list[float]], timer: Timer) -> list[SolutionSta
                 if total_cost < bssf:
                     bssf = total_cost
                     best_solution_path = current_state.path
+
+                    new_stat = SolutionStats(
+                        tour=best_solution_path,
+                        score=bssf,
+                        time=timer.time(),
+                        max_queue_size=max_queue_size,
+                        n_nodes_expanded=count,
+                        n_nodes_pruned=pruned,
+                        n_leaves_covered=cut_tree.n_leaves_cut(),  # Update this
+                        fraction_leaves_covered=cut_tree.fraction_leaves_covered()  # Update this
+                    )
+                    results.append(new_stat)
             continue
+
         current_city = current_state.path[-1]
         candidate_cities = list(current_state.unvisited)
 
@@ -399,25 +431,35 @@ def branch_and_bound(edges: list[list[float]], timer: Timer) -> list[SolutionSta
                 potential_children.append(child)
             else:
                 pruned += 1
+                cut_tree.cut(child.path)
+
         potential_children.sort(key=lambda x: x.lower_bound)
         if len(potential_children) > k:
-            pruned += (len(potential_children) - k)
             best_children = potential_children[:k]
+            dropped_children = potential_children[k:]
+            for child in dropped_children:
+                pruned += 1
+                cut_tree.cut(child.path)
         else:
             best_children = potential_children
+
         stack.extend(reversed(best_children))
 
         count += 1
-    return [SolutionStats(
-        tour=best_solution_path,
-        score=bssf,
-        time=timer.time(),
-        max_queue_size=max_queue_size,
-        n_nodes_expanded=count,
-        n_nodes_pruned=pruned,
-        n_leaves_covered=0,
-        fraction_leaves_covered=0.0
-    )]
+
+    if not results and best_solution_path:
+        results.append(SolutionStats(
+            tour=best_solution_path,
+            score=bssf,
+            time=timer.time(),
+            max_queue_size=max_queue_size,
+            n_nodes_expanded=count,
+            n_nodes_pruned=pruned,
+            n_leaves_covered=cut_tree.n_leaves_cut(),
+            fraction_leaves_covered=cut_tree.fraction_leaves_covered()
+        ))
+
+    return results
 
 
 def branch_and_bound_smart(edges: list[list[float]], timer: Timer) -> list[SolutionStats]:
