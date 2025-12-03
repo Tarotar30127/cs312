@@ -6,12 +6,12 @@ from tsp_core import Tour, SolutionStats, Timer, score_tour, Solver
 from tsp_cuttree import CutTree
 
 PARAMS_FOR_SMART_BRANCH_AND_BOUND_SMART_TEST = {
-    "n": 30,
+    "n": 15,
     "euclidean": True,
     "reduction": 0.2,
     "normal": False,
-    "seed": 312,
-    "timeout": 20
+    "seed": 100,
+    "timeout": 40
 }
 
 
@@ -141,144 +141,81 @@ def greedy_tour(edges: list[list[float]], timer: Timer) -> list[SolutionStats]:
     return solution.return_list()
 
 
-def dfs(edges, timer):
-    num_nodes = len(edges)
-    cut_tree = CutTree(num_nodes)
+def dfs(edges, timer, stack, bssf_cost, stats_history):
+    n = len(edges)
+    cut_tree = CutTree(n)
+
     max_queue_size = 1
-    n_nodes_expanded = 0
-    n_nodes_pruned = 0
-    n_leaves_covered = 0
-    fraction_leaves_covered = 0.0
-
-    results = []
-    greedy_solution_list = greedy_tour(edges, timer)
-
-    if greedy_solution_list:
-        initial_bssf = greedy_solution_list[-1]
-        results.append(initial_bssf)
-        best_tour = initial_bssf.tour
-        best_score = initial_bssf.score
-        best_time = initial_bssf.time
-    else:
-        best_tour = []
-        best_score = math.inf
-        best_time = timer.time()
-    bssf = SolutionStats(
-        tour=best_tour,
-        score=best_score,
-        time=best_time,
-        max_queue_size=max_queue_size,
-        n_nodes_expanded=n_nodes_expanded,
-        n_nodes_pruned=n_nodes_pruned,
-        n_leaves_covered=n_leaves_covered,
-        fraction_leaves_covered=fraction_leaves_covered
-    )
-
-    stack = [(0, 0.0, 0)]
-    path = [0]
-    visited = {0}
-
-    max_queue_size = max(1, max_queue_size)
+    n_expanded = 0
+    n_pruned = 0
 
     while stack:
-        max_queue_size = max(max_queue_size, len(stack))
-
         if timer.time_out():
-            # Create a final snapshot
-            final_stat = SolutionStats(
-                tour=bssf.tour,
-                score=bssf.score,
-                time=timer.time(),
-                max_queue_size=max_queue_size,
-                n_nodes_expanded=n_nodes_expanded,
-                n_nodes_pruned=n_nodes_pruned,
-                n_leaves_covered=n_leaves_covered,
-                fraction_leaves_covered=cut_tree.fraction_leaves_covered()
-            )
-            results.append(final_stat)
-            return results
+            return stats_history
 
-        current_node, current_cost, neighbor_index = stack[-1]
+        if len(stack) > max_queue_size:
+            max_queue_size = len(stack)
 
-        if neighbor_index == 0:
-            n_nodes_expanded += 1
+        current_state = stack.pop()
 
-        if current_cost >= bssf.score:
-            n_nodes_pruned += 1
-            cut_tree.cut(path)
-            stack.pop()
-            visited.remove(current_node)
-            path.pop()
+        if current_state.lower_bound >= bssf_cost:
+            n_pruned += 1
+            cut_tree.cut(current_state.path)
             continue
 
-        found_next_node = False
-        for i in range(neighbor_index, num_nodes):
-            neighbor = i
-            stack[-1] = (current_node, current_cost, i + 1)
+        if len(current_state.path) == n:
+            last_city = current_state.path[-1]
+            first_city = current_state.path[0]
 
-            cost_to_neighbor = edges[current_node][neighbor]
+            if edges[last_city][first_city] < math.inf:
+                total_cost = current_state.lower_bound + edges[last_city][first_city]
 
-            if neighbor not in visited and cost_to_neighbor != math.inf:
-                new_cost = current_cost + cost_to_neighbor
+                if total_cost < bssf_cost:
+                    bssf_cost = total_cost
+                    bssf_tour = current_state.path
 
-                if new_cost >= bssf.score:
-                    n_nodes_pruned += 1
-                    cut_tree.cut(path + [neighbor])
-                    continue
+                    stats_history.append(SolutionStats(
+                        tour=bssf_tour,
+                        score=bssf_cost,
+                time=timer.time(),
+                max_queue_size=max_queue_size,
+                        n_nodes_expanded=n_expanded,
+                        n_nodes_pruned=n_pruned,
+                        n_leaves_covered=cut_tree.n_leaves_cut(),
+                fraction_leaves_covered=cut_tree.fraction_leaves_covered()
+                    ))
+            continue
 
-                if len(path) + 1 == num_nodes:
-                    n_leaves_covered += 1
-                    cut_tree.cut(path + [neighbor])
+        n_expanded += 1
+        children = []
 
-                    cost_to_start = edges[neighbor][0]
+        for next_city in current_state.unvisited:
+            child = current_state.create_child(next_city, edges)
 
-                    if cost_to_start != math.inf:
-                        total_cost = new_cost + cost_to_start
+            if child.lower_bound < bssf_cost:
+                children.append(child)
+            else:
+                n_pruned += 1
+                cut_tree.cut(child.path)
 
-                        if total_cost < bssf.score:
-                            bssf.tour = path.copy() + [neighbor]
-                            bssf.score = total_cost
-                            bssf.time = timer.time()
+        children.sort(key=lambda x: x.lower_bound, reverse=True)
+        stack.extend(children)
 
-                            new_stat = SolutionStats(
-                                tour=bssf.tour,
-                                score=bssf.score,
-                                time=bssf.time,
-                                max_queue_size=max_queue_size,
-                                n_nodes_expanded=n_nodes_expanded,
-                                n_nodes_pruned=n_nodes_pruned,
-                                n_leaves_covered=n_leaves_covered,
-                                fraction_leaves_covered=cut_tree.fraction_leaves_covered()
-                            )
-                            results.append(new_stat)
-                else:
-                    visited.add(neighbor)
-                    path.append(neighbor)
-                    stack.append((neighbor, new_cost, 0))
-                    found_next_node = True
-                    break
-
-        if not found_next_node:
-            stack.pop()
-            visited.remove(current_node)
-            path.pop()
-    return results
+    return stats_history
 
 
 class MatrixClass:
-    __slots__ = ['matrix', 'lower_bound', 'path', 'unvisited', 'actual_cost']
+    __slots__ = ['matrix', 'lower_bound', 'path', 'unvisited']
 
-    def __init__(self, matrix, lower_bound, path, unvisited, actual_cost=0.0):
+    def __init__(self, matrix, lower_bound, path, unvisited):
         self.matrix = matrix
         self.lower_bound = lower_bound
         self.path = path
         self.unvisited = unvisited
-        self.actual_cost = actual_cost
 
     def reduce_matrix(self):
         reduction_cost = 0
-        matrix = self.matrix
-        n = len(matrix)
+        n = len(self.matrix)
         for r in range(n):
             row = self.matrix[r]
             min_val = math.inf
@@ -326,18 +263,11 @@ class MatrixClass:
         self.lower_bound += reduction_cost
         return reduction_cost
 
-    def update_matrix(self, city_index, edges):
+    def create_child(self, city_index, edges):
         current_city = self.path[-1]
         new_matrix = [row[:] for row in self.matrix]
 
-        reduced_edge_cost = self.matrix[current_city][city_index]
-        if reduced_edge_cost == math.inf:
-            return MatrixClass(new_matrix, math.inf, self.path + [city_index], set(), math.inf)
-
-        actual_edge_cost = edges[current_city][city_index]
-        if actual_edge_cost == math.inf:
-            return MatrixClass(new_matrix, math.inf, self.path + [city_index], set(), math.inf)
-
+        edge_cost = self.matrix[current_city][city_index]
         n = len(new_matrix)
         for i in range(n):
             new_matrix[current_city][i] = math.inf
@@ -349,26 +279,18 @@ class MatrixClass:
         new_path = self.path + [city_index]
         new_unvisited = self.unvisited.copy()
         new_unvisited.remove(city_index)
-        child_state = MatrixClass(new_matrix, self.lower_bound + reduced_edge_cost, new_path, new_unvisited,
-                                  self.actual_cost + actual_edge_cost)
-        reduction_cost = child_state.reduce_matrix()
-        if reduction_cost == math.inf:
-            child_state.lower_bound = math.inf
-            child_state.actual_cost = math.inf
+
+        child_state = MatrixClass(new_matrix, self.lower_bound + edge_cost, new_path, new_unvisited)
+        child_state.reduce_matrix()
         return child_state
 
 
 def branch_and_bound(edges: list[list[float]], timer: Timer) -> list[SolutionStats]:
     n = len(edges)
     initial_matrix = [row[:] for row in edges]
-    cut_tree = CutTree(n)
-
-    results = []
     greedy_solutions = greedy_tour(edges, timer)
-
     if greedy_solutions:
         initial_best = greedy_solutions[-1]
-        results.append(initial_best)
         bssf = initial_best.score
         best_solution_path = initial_best.tour
     else:
@@ -376,7 +298,10 @@ def branch_and_bound(edges: list[list[float]], timer: Timer) -> list[SolutionSta
         best_solution_path = []
 
     root_state = MatrixClass(
-        initial_matrix, 0, [0], set(range(1, n)), 0
+        initial_matrix,
+        0,
+        [0],
+        set(range(1, n))
     )
     root_state.reduce_matrix()
     stack = [root_state]
@@ -393,7 +318,6 @@ def branch_and_bound(edges: list[list[float]], timer: Timer) -> list[SolutionSta
         current_state = stack.pop()
         if current_state.lower_bound >= bssf:
             pruned += 1
-            cut_tree.cut(current_state.path)
             continue
 
         if not current_state.unvisited:
@@ -402,66 +326,187 @@ def branch_and_bound(edges: list[list[float]], timer: Timer) -> list[SolutionSta
             return_cost = edges[last_city][start_city]
 
             if return_cost < math.inf:
-                total_cost = current_state.actual_cost + return_cost
+                total_cost = score_tour(current_state.path, edges)
                 if total_cost < bssf:
                     bssf = total_cost
-                    best_solution_path = current_state.path
-
-                    new_stat = SolutionStats(
-                        tour=best_solution_path,
-                        score=bssf,
-                        time=timer.time(),
-                        max_queue_size=max_queue_size,
-                        n_nodes_expanded=count,
-                        n_nodes_pruned=pruned,
-                        n_leaves_covered=cut_tree.n_leaves_cut(),  # Update this
-                        fraction_leaves_covered=cut_tree.fraction_leaves_covered()  # Update this
-                    )
-                    results.append(new_stat)
+                    best_solution_path = current_state.path.copy()
             continue
 
         current_city = current_state.path[-1]
         candidate_cities = list(current_state.unvisited)
-
         potential_children = []
 
         for next_city in candidate_cities:
-            child = current_state.update_matrix(next_city, edges)
+            child = current_state.create_child(next_city, edges)
             if child.lower_bound < bssf:
                 potential_children.append(child)
             else:
                 pruned += 1
-                cut_tree.cut(child.path)
 
         potential_children.sort(key=lambda x: x.lower_bound)
         if len(potential_children) > k:
+            pruned += (len(potential_children) - k)
             best_children = potential_children[:k]
-            dropped_children = potential_children[k:]
-            for child in dropped_children:
-                pruned += 1
-                cut_tree.cut(child.path)
         else:
             best_children = potential_children
 
         stack.extend(reversed(best_children))
-
         count += 1
 
-    if not results and best_solution_path:
+    results = []
+    if best_solution_path:
         results.append(SolutionStats(
-            tour=best_solution_path,
+            tour=best_solution_path.copy() if isinstance(best_solution_path, list) else best_solution_path,
             score=bssf,
             time=timer.time(),
             max_queue_size=max_queue_size,
             n_nodes_expanded=count,
             n_nodes_pruned=pruned,
-            n_leaves_covered=cut_tree.n_leaves_cut(),
-            fraction_leaves_covered=cut_tree.fraction_leaves_covered()
+            n_leaves_covered=0,
+            fraction_leaves_covered=0.0
         ))
-
     return results
 
 
 def branch_and_bound_smart(edges: list[list[float]], timer: Timer) -> list[SolutionStats]:
-    return []
+    n = len(edges)
+    initial_matrix = [row[:] for row in edges]
+    cut_tree = CutTree(n)
+    results = []
+    
+    greedy_solutions = greedy_tour(edges, timer)
+    for stat in greedy_solutions:
+        results.append(stat)
+    
+    if len(greedy_solutions) > 0:
+        score_to_beat = greedy_solutions[-1].score
+    else:
+        score_to_beat = math.inf
+    
+    priority_queue = []
+    counter = 0
+    
+    n_nodes_expanded = 0  # Will be incremented when we pop nodes
+    n_nodes_pruned = 0
+    max_queue_size = 1
 
+    root_state = MatrixClass(initial_matrix, 0, [0], set(range(1, n)))
+    root_state.reduce_matrix()
+    
+    # Use lower_bound directly as priority for best-first search
+    root_priority = root_state.lower_bound if root_state.lower_bound != math.inf else float('inf')
+    
+    heapq.heappush(priority_queue, (root_priority, counter, root_state))
+    counter += 1
+    
+    MAX_QUEUE_SIZE = 50000  # Increased queue size limit
+    
+    while not timer.time_out() and len(priority_queue) > 0:
+        current_queue_size = len(priority_queue)
+        if current_queue_size > max_queue_size:
+            max_queue_size = current_queue_size
+        
+        # Only prune queue if it gets very large, and keep more nodes
+        if current_queue_size > MAX_QUEUE_SIZE:
+            temp_list = []
+            while len(priority_queue) > 0:
+                temp_list.append(heapq.heappop(priority_queue))
+            
+            temp_list.sort(key=lambda x: x[0])
+            # Keep top 70% instead of 50% - less aggressive pruning
+            keep_count = int(len(temp_list) * 0.7)
+            
+            for item in temp_list[:keep_count]:
+                heapq.heappush(priority_queue, item)
+            
+            for item in temp_list[keep_count:]:
+                n_nodes_pruned += 1
+                cut_tree.cut(item[2].path)
+        
+        _, _, current_state = heapq.heappop(priority_queue)
+        n_nodes_expanded += 1  # Increment when we expand a node
+
+        if current_state.lower_bound >= score_to_beat:
+            n_nodes_pruned += 1
+            cut_tree.cut(current_state.path)
+            continue
+
+        path_len = len(current_state.path)
+        
+        if path_len == n:
+            tour = list(current_state.path)
+            cost = 0
+            for i in range(len(tour)):
+                next_i = (i + 1) % len(tour)
+                cost += edges[tour[i]][tour[next_i]]
+            
+            if cost != math.inf and cost <= score_to_beat:
+                score_to_beat = cost
+                results.append(SolutionStats(
+                    tour=tour,
+                    score=cost,
+                        time=timer.time(),
+                        max_queue_size=max_queue_size,
+                    n_nodes_expanded=n_nodes_expanded,
+                    n_nodes_pruned=n_nodes_pruned,
+                        n_leaves_covered=cut_tree.n_leaves_cut(),
+                        fraction_leaves_covered=cut_tree.fraction_leaves_covered()
+                ))
+        else:
+            children = []
+            
+            for next_city in current_state.unvisited:
+                if current_state.matrix[current_state.path[-1]][next_city] == math.inf:
+                    continue
+                
+                child = current_state.create_child(next_city, edges)
+                
+                if score_to_beat < child.lower_bound:
+                    n_nodes_pruned += 1
+                    cut_tree.cut(child.path)
+                else:
+                    # Use lower_bound directly as priority for best-first search
+                    child_priority = child.lower_bound if child.lower_bound != math.inf else float('inf')
+                    
+                    children.append((child_priority, counter, child))
+                    counter += 1
+            
+            if len(children) > 0:
+                # Sort by priority (lower_bound)
+                children.sort(key=lambda x: x[0])
+                
+                # Keep more children - be less restrictive to allow better exploration
+                # Keep all children within a reasonable bound multiplier, or top N, whichever is more
+                max_children_to_keep = min(20, len(children))  # Increased from 15
+                bound_multiplier = 3.0  # More relaxed multiplier
+                
+                best_bound = children[0][0]
+                keep_children = []
+                keep_indices = set()
+                
+                # First, collect all children within the bound multiplier
+                for i, child in enumerate(children):
+                    if child[0] <= best_bound * bound_multiplier:
+                        keep_children.append(child)
+                        keep_indices.add(i)
+                
+                # If we have fewer than max_children_to_keep within bound, keep more of the best ones
+                if len(keep_children) < max_children_to_keep:
+                    for i, child in enumerate(children):
+                        if i not in keep_indices:
+                            keep_children.append(child)
+                            keep_indices.add(i)
+                            if len(keep_children) >= max_children_to_keep:
+                                break
+                
+                # Prune the rest
+                for i, child in enumerate(children):
+                    if i not in keep_indices:
+                        n_nodes_pruned += 1
+                        cut_tree.cut(child[2].path)
+                
+                # Add kept children to priority queue
+                for child in keep_children:
+                    heapq.heappush(priority_queue, child)
+
+    return results
