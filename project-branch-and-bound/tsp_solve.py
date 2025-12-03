@@ -386,34 +386,30 @@ def branch_and_bound_smart(edges: list[list[float]], timer: Timer) -> list[Solut
     priority_queue = []
     counter = 0
     
-    n_nodes_expanded = 0  # Will be incremented when we pop nodes
+    n_nodes_expanded = 0
     n_nodes_pruned = 0
     max_queue_size = 1
 
     root_state = MatrixClass(initial_matrix, 0, [0], set(range(1, n)))
     root_state.reduce_matrix()
-    
-    # Use lower_bound directly as priority for best-first search
     root_priority = root_state.lower_bound if root_state.lower_bound != math.inf else float('inf')
     
     heapq.heappush(priority_queue, (root_priority, counter, root_state))
     counter += 1
     
-    MAX_QUEUE_SIZE = 50000  # Increased queue size limit
+    MAX_QUEUE_SIZE = 50000
     
     while not timer.time_out() and len(priority_queue) > 0:
         current_queue_size = len(priority_queue)
         if current_queue_size > max_queue_size:
             max_queue_size = current_queue_size
         
-        # Only prune queue if it gets very large, and keep more nodes
         if current_queue_size > MAX_QUEUE_SIZE:
             temp_list = []
             while len(priority_queue) > 0:
                 temp_list.append(heapq.heappop(priority_queue))
             
             temp_list.sort(key=lambda x: x[0])
-            # Keep top 70% instead of 50% - less aggressive pruning
             keep_count = int(len(temp_list) * 0.7)
             
             for item in temp_list[:keep_count]:
@@ -424,7 +420,7 @@ def branch_and_bound_smart(edges: list[list[float]], timer: Timer) -> list[Solut
                 cut_tree.cut(item[2].path)
         
         _, _, current_state = heapq.heappop(priority_queue)
-        n_nodes_expanded += 1  # Increment when we expand a node
+        n_nodes_expanded += 1
 
         if current_state.lower_bound >= score_to_beat:
             n_nodes_pruned += 1
@@ -472,25 +468,18 @@ def branch_and_bound_smart(edges: list[list[float]], timer: Timer) -> list[Solut
                     counter += 1
             
             if len(children) > 0:
-                # Sort by priority (lower_bound)
                 children.sort(key=lambda x: x[0])
-                
-                # Keep more children - be less restrictive to allow better exploration
-                # Keep all children within a reasonable bound multiplier, or top N, whichever is more
-                max_children_to_keep = min(20, len(children))  # Increased from 15
-                bound_multiplier = 3.0  # More relaxed multiplier
+                max_children_to_keep = min(20, len(children))
+                bound_multiplier = 3.0
                 
                 best_bound = children[0][0]
                 keep_children = []
                 keep_indices = set()
-                
-                # First, collect all children within the bound multiplier
                 for i, child in enumerate(children):
                     if child[0] <= best_bound * bound_multiplier:
                         keep_children.append(child)
                         keep_indices.add(i)
                 
-                # If we have fewer than max_children_to_keep within bound, keep more of the best ones
                 if len(keep_children) < max_children_to_keep:
                     for i, child in enumerate(children):
                         if i not in keep_indices:
@@ -498,14 +487,10 @@ def branch_and_bound_smart(edges: list[list[float]], timer: Timer) -> list[Solut
                             keep_indices.add(i)
                             if len(keep_children) >= max_children_to_keep:
                                 break
-                
-                # Prune the rest
                 for i, child in enumerate(children):
                     if i not in keep_indices:
                         n_nodes_pruned += 1
                         cut_tree.cut(child[2].path)
-                
-                # Add kept children to priority queue
                 for child in keep_children:
                     heapq.heappush(priority_queue, child)
 
