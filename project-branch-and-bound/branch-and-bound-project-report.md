@@ -597,13 +597,33 @@ BSSF score.*
 
 ### Selected PQ Key
 
-*Fill me in*
+*Branch and Bound Smart used Cost per City or Normalized Cost as the priority key. This approach was chosen to stop using the
+raw Lower Bound as a priority and use a normalized cost instead. Without normalization, a Priority Queue would be bias 
+towards shallow nodes simply because they have fewer edges added to their total sum.*
 
 ### Branch and Bound versus Smart Branch and Bound
 
-*Fill me in*
+*The Branch and Bound algorithm relies on a stack data structure to implement a Depth-First Search and then aggressively 
+explore other branches to its limit before backtracking. This approach is memory-efficient and finds an initial solution 
+quickly. the algorithm often wastes time by searching high-cost subtrees simply because the trees were next in line. 
+The Smart Branch and Bound utilizes a priority queue to implement a Best-First Search which works by selecting the most 
+promising node from the entire tree. Then uses a key as the lower bound cost minus a bonus for depth the algorithm 
+balances the need for low cost with the need to dive deep to find valid tours. This ordering allows the Smart version to
+jump around the tree and pause more expensive paths to focus on branches that are mathematically more likely to contain
+the optimal solution. Although Smart Branch and Bound consumes more memory to store the priority queue. It typically 
+converges on the optimal solution and prunes the search space much faster than the standard approach.*
 
 ## Project Report 
 
-*Fill me in*
+*I talked with Kyle Mak and Collin V about the project and all that we learned. In this project, we learned the 
+effectiveness of the Branch and Bound algorithm in solving the Traveling Salesperson Problem by utilizing matrix 
+reduction to establish lower bounds for aggressive pruning. Through theoretical and empirical analysis, I observed that 
+while the worst-case time complexity remains exponential (O(n34n)). By graphing the search space coverage showed that 
+Branch and Bound prunes sections of the tree much earlier than standard Depth-First Search which resulted in 
+significantly faster convergence on optimal solutions. Implementing "Smart" Branch and Bound shifted the strategy from 
+a stack-based approach to a Best-First Search using a priority queue and used a normalized cost to balance exploration 
+depth with path quality. I learned that normalizing the lower bound by depth is crucial to prevent the priority queue 
+from reverting to a breadth-first search behavior and ensuring the algorithm finds valid tours quickly to update the 
+Best So Far BSSF. In conclusion, this project showed that  pruning strategies are essential for solving NP-hard 
+optimization problems efficiently.*
 
