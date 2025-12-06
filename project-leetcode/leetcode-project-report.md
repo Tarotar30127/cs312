@@ -322,19 +322,45 @@ class Solution:
 
 #### Problem Information
 
-Problem Name: *fill me in*
+Problem Name: *1137. N-th Tribonacci Number*
 
-[Submission Link]()
+[Submission Link](https://leetcode.com/problems/n-th-tribonacci-number/submissions/1848087698/)
 
-![Screenshot of successful submission]()
+![1137-N-th-Tribonacci-Number.png](1137-N-th-Tribonacci-Number.png)
 
 #### Time Complexity
 
-*Fill me in*
+```python
+class Solution:
+    def __init__(self):
+        self.seq = {0:0, 1:1, 2:1}            # O(1) runs once per instance
+    def tribonacci(self, n: int) -> int:
+        if n in self.seq:                     # O(1) constant time
+            return self.seq[n]                # O(1) constant time
+        result = self.tribonacci(n-1) + self.tribonacci(n-2) + self.tribonacci(n-3) # O(n) recursive call for each number
+        self.seq[n] = result                  # O(1) constant time
+        return result                         # O(1) constant time
+```
+
+*The time complexity is O(n) becuase the lines run exactly once for each number from 3 to n.*
 
 #### Space Complexity
 
-*Fill me in*
+```python
+class Solution:
+    def __init__(self):
+        self.seq = {0:0, 1:1, 2:1}            # O(n) map grows to n-1
+
+    def tribonacci(self, n: int) -> int:
+        if n in self.seq:                     # O(1) constant space
+            return self.seq[n]                # O(1) constant space
+        result = self.tribonacci(n-1) + self.tribonacci(n-2) + self.tribonacci(n-3) # O(n) stack Depth
+        
+        self.seq[n] = result                  # O(1) constant space
+        return result                         # O(1) constant space
+```
+
+*The space complexity is O(n) because the map grows to n length.*
 
 ----
 
@@ -344,19 +370,45 @@ Problem Name: *fill me in*
 
 #### Problem Information
 
-Problem Name: *fill me in*
+Problem Name: *1. Two Sum*
 
-[Submission Link]()
+[Submission Link](https://leetcode.com/problems/two-sum/submissions/1848105539/)
 
-![Screenshot of successful submission]()
+![1-two-sum.png](1-two-sum.png)
 
 #### Time Complexity
 
-*Fill me in*
+```python
+class Solution:
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
+        ind = 0                                          # O(1) init variable
+        while nums:                                      # O(n) outer Loop
+            curr_num = nums.pop(0)                       # O(n) linear Shift 
+            for index, num in enumerate(nums):           # O(N) inner Loop average n/2
+                if curr_num + num == target:             # O(1) constant time
+                    return [ind, ind+index+1]            # O(1) constant time
+            ind += 1                                     # O(1) constant time
+        return []
+```
+
+*The time complexity is O(n^2) because the outer loop and inner loop.*
 
 #### Space Complexity
 
-*Fill me in*
+```python
+class Solution:
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
+        ind = 0                                          # O(1) constant space
+        while nums:                                      # O(1) constant space
+            curr_num = nums.pop(0)                       # O(1) constant space
+            for index, num in enumerate(nums):           # O(1) constant space
+                if curr_num + num == target:             # O(1) constant space
+                    return [ind, ind+index+1]            # O(1) constant space
+            ind += 1                                     # O(1) constant space
+        return []
+```
+
+*The space complexity is O(1) because there are no new auxiliary space*
 
 ----
 
