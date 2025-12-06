@@ -418,17 +418,211 @@ class Solution:
 
 #### Problem Information
 
-Problem Name: *fill me in*
+Problem Name: *39. Combination Sum*
 
-[Submission Link]()
+[Submission Link](https://leetcode.com/problems/combination-sum/submissions/1848138619/)
 
-![Screenshot of successful submission]()
+![39-Combination-Sum.png](39-Combination-Sum.png)
 
 #### Time Complexity
+
+```python
+class Solution:
+    def combinationSum(self, candidates: List[int], target: int) -> List[List[int]]:
+        queue = deque([([], 0, 0)])                              # O(1) constant time
+        solutions = []                                           # O(1) constant time
+        while queue:                                             # O(n) runs n time
+            curr_combo, curr_sum, idx = queue.popleft()          # O(1) Pop
+            if curr_sum == target:                               # O(1) check
+                solutions.append(curr_combo)                     # O(1) constant time
+                continue
+            if curr_sum > target:                                # O(1) constant time
+                continue
+            for i in range(idx, len(candidates)):                # O(n) loops n times
+                num = candidates[i]
+                new_combo = curr_combo + [num]                   # O(n) copying
+                queue.append((new_combo, curr_sum + num, i))     # O(1) append
+        return solutions
+```
+
+*The time complexity is O(n^target) because search tree branches out.*
+
+#### Space Complexity
+
+```python
+class Solution:
+    def combinationSum(self, candidates: List[int], target: int) -> List[List[int]]:
+        queue = deque([([], 0, 0)])                              # O(1) grows to n length
+        solutions = []                                           # O(K) stores answers
+        while queue:                                             
+            curr_combo, curr_sum, idx = queue.popleft()          # O(1) remove from memory            
+            for i in range(idx, len(candidates)):
+                num = candidates[i]
+                queue.append((curr_combo + [num], curr_sum + num, i)) # O(n) new allocation
+        return solutions
+```
+
+*The space complexity is O(n^target) because queue must hold all partial combinations*
+
+## Extra Credit
+
+### Extra Credit Problem 1
+
+#### Problem Information
+
+Problem Name: *1584. Min Cost to Connect All Points*
+
+[Submission Link](https://leetcode.com/problems/min-cost-to-connect-all-points/submissions/1848161211/)
+
+![1584-Min-Cost-to-Connect-All-Points.png](1584-Min-Cost-to-Connect-All-Points.png)
+
+#### Time Complexity
+
+```python
+import numpy as np
+class Solution:
+    def minCostConnectPoints(self, points: List[List[int]]) -> int:
+        n = len(points)
+        distance_matrix = np.zeros((n, n))                 # O(n^2) n by n matrix
+        for i in range(n):                                 # O(n) outer loop
+            for j in range(n):                             # O(n) inner loop
+                dist = abs(points[i][0] - points[j][0]) + abs(points[i][1] - points[j][1])
+                distance_matrix[i][j] = dist               # O(1) constant time
+        min_dist = [float('inf')] * n                      # O(n) setup
+        min_dist[0] = 0                                    # O(1) constant time
+        visited = [False] * n                              # O(N) setup
+        mst_cost = 0                                       # O(1) constant time
+        for _ in range(n):                                 # O(n) loop
+            u = -1
+            curr_min = float('inf')
+            
+            for i in range(n):                             # O(n) linear scan
+                if not visited[i] and min_dist[i] < curr_min:
+                    curr_min = min_dist[i]                 # O(1) update
+                    u = i
+            
+            visited[u] = True                              # O(1) visited
+            mst_cost += curr_min                           # O(1) add cost
+            for v in range(n):                             # O(n) scan
+                if not visited[v]:
+                    if distance_matrix[u][v] < min_dist[v]:
+                        min_dist[v] = distance_matrix[u][v] # O(1) update
+        return int(mst_cost)
+```
+
+*The time complexity is O(n^2) because the matrix setup and loop both have loops.*
+
+#### Space Complexity
+
+```python
+import numpy as np
+class Solution:
+    def minCostConnectPoints(self, points: List[List[int]]) -> int:
+        n = len(points)
+        distance_matrix = np.zeros((n, n))                 # O(n^2) n by n matrix
+        for i in range(n):                                 # O(1) constant space
+            for j in range(n):                             # O(1) constant space
+                distance_matrix[i][j] = dist               # O(1) constant space
+        
+        min_dist = [float('inf')] * n                      # O(n) array
+        min_dist[0] = 0                                    # O(1) constant space
+        visited = [False] * n                              # O(n) array
+        mst_cost = 0                                       # O(1) constant space
+        for _ in range(n):                                 # O(n) loop
+            u = -1
+            curr_min = float('inf')
+            
+            for i in range(n):                             # O(1) scan
+                if not visited[i] and min_dist[i] < curr_min:
+                    curr_min = min_dist[i]                 # O(1) update
+                    u = i
+            
+            visited[u] = True                              # O(1) visited
+            mst_cost += curr_min                           # O(1) add cost
+            for v in range(n):                             # O(1) scan
+                if not visited[v]:
+                    if distance_matrix[u][v] < min_dist[v]:
+                        min_dist[v] = distance_matrix[u][v] # O(1) update
+        return int(mst_cost)
+```
+
+*The space complexity is O(n^2) becuase of the matrix.*
+
+### Extra Credit Problem 2
+
+#### Problem Information
+
+Problem Name: *39. Combination Sum*
+
+[Submission Link](https://leetcode.com/problems/combination-sum/submissions/1848138619/)
+
+![39-Combination-Sum.png](39-Combination-Sum.png)
+
+#### Time Complexity
+
+```python
+
+```
 
 *Fill me in*
 
 #### Space Complexity
+
+```python
+
+```
+
+*Fill me in*
+
+### Extra Credit Problem 3
+
+#### Problem Information
+
+Problem Name: *39. Combination Sum*
+
+[Submission Link](https://leetcode.com/problems/combination-sum/submissions/1848138619/)
+
+![39-Combination-Sum.png](39-Combination-Sum.png)
+
+#### Time Complexity
+
+```python
+
+```
+
+*Fill me in*
+
+#### Space Complexity
+
+```python
+
+```
+
+*Fill me in*
+
+### Extra Credit Problem 4
+
+#### Problem Information
+
+Problem Name: *39. Combination Sum*
+
+[Submission Link](https://leetcode.com/problems/combination-sum/submissions/1848138619/)
+
+![39-Combination-Sum.png](39-Combination-Sum.png)
+
+#### Time Complexity
+
+```python
+
+```
+
+*Fill me in*
+
+#### Space Complexity
+
+```python
+
+```
 
 *Fill me in*
 
