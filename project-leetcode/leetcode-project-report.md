@@ -658,25 +658,69 @@ class Solution:
 
 Problem Name: *207. Course Schedule*
 
-[Submission Link]()
+[Submission Link](https://leetcode.com/problems/course-schedule/submissions/1850318055/)
 
-![]()
+![207-Course-Schedule .png](207-Course-Schedule%20.png)
 
 #### Time Complexity
 
 ```python
+from collections import deque
 
+class Solution:
+    def canFinish(self, numCourses: int, prerequisites: List[List[int]]) -> bool:        
+        adj = [[] for _ in range(numCourses)]              # O(v) create a list of lists
+        indegree = [0] * numCourses                        # O(v) array
+        for course, pre in prerequisites:                  # O(e) loop edges times
+            adj[pre].append(course)                        # O(1) append
+            indegree[course] += 1                          # O(1) increment
+        queue = deque()                                    # O(1) create queue
+        for i in range(numCourses):                        # O(v) look at all courses
+            if indegree[i] == 0:                           # O(1) constant time   
+                queue.append(i)                            # O(1) constant time        
+        processed_count = 0                                # O(1) constant time   
+        while queue:                                       # O(v) look at courses
+            node = queue.popleft()                         # O(1) pop
+            processed_count += 1                           # O(1) constant time   
+            for neighbor in adj[node]:                     # O(e) look at all edges
+                indegree[neighbor] -= 1                    # O(1) decrement
+                if indegree[neighbor] == 0:                # O(1) constant time   
+                    queue.append(neighbor)                 # O(1) constant time   
+                    
+        # Total Time: O(V) + O(E) + O(V) + O(E) -> O(V + E)
+        return processed_count == numCourses               # O(1)      Comparison
 ```
 
-*Fill me in*
+*The time complexity is O(v+e) because v is numCourses and e is the number of prerequisites and the algorithm visits
+every node and every dependency once.*
 
 #### Space Complexity
 
 ```python
-
+class Solution:
+    def canFinish(self, numCourses: int, prerequisites: List[List[int]]) -> bool:
+        adj = [[] for _ in range(numCourses)]              # O(v + e) adjacency list
+        indegree = [0] * numCourses                        # O(v) array
+        for course, pre in prerequisites:                  # O(1) constant space
+            adj[pre].append(course)                        # O(1) constant space
+            indegree[course] += 1                          # O(1) constant space
+        queue = deque()                                    # O(v) grows to size v
+        for i in range(numCourses):                        # O(1) constant space
+            if indegree[i] == 0:                           # O(1) constant space  
+                queue.append(i)                            # O(1) constant space
+        processed_count = 0                                # O(1) constant space
+        while queue:                                       # O(1) constant space
+            node = queue.popleft()                         # O(1) constant space
+            processed_count += 1                           # O(1) constant space
+            for neighbor in adj[node]:                     # O(e) constant space
+                indegree[neighbor] -= 1                    # O(1) constant space
+                if indegree[neighbor] == 0:                # O(1) constant space 
+                    queue.append(neighbor)                 # O(1) constant space 
+        return processed_count == numCourses
 ```
 
-*Fill me in*
+*The space complexity is O(v+e) because the algorithm builds an adjacency list to represent the graph and storing all 
+courses and their dependencies*
 
 ## Project Review
 
