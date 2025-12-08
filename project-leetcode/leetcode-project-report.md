@@ -725,7 +725,7 @@ courses and their dependencies*
 ## Project Review
 
 *In conclusion, I talked to Kyle Mak and Collin V about the leet code and how we need to start better preparing for the
-leetcode probelms for job searching. We also compared Breadth-First Search with Depth-First Search. Through problems 
+leetcode problems for job searching. We also compared Breadth-First Search with Depth-First Search. Through problems 
 like 'Combination Sum' and 'Perfect Squares', I learned that while BFS guarantees finding the shortest path. It can be 
 much more memory-intensive than DFS because it has to store every partial solution in the queue at once. This helped me
 understand how to choose the right algorithm based on whether memory or path optimality is the constraint*
