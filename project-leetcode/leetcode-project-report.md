@@ -552,63 +552,115 @@ class Solution:
 
 #### Problem Information
 
-Problem Name: *39. Combination Sum*
+Problem Name: *236. Lowest Common Ancestor of a Binary Tree*
 
-[Submission Link](https://leetcode.com/problems/combination-sum/submissions/1848138619/)
+[Submission Link](https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/submissions/1849957369/)
 
-![39-Combination-Sum.png](39-Combination-Sum.png)
+![236-Lowest-Common Ancestor.png](236-Lowest-Common%20Ancestor.png)
 
 #### Time Complexity
 
 ```python
-
+class Solution:
+    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
+        stack = [root]                                    # O(1) constant stack
+        parent = {root: None}                             # O(1) constant hash map
+        while p not in parent or q not in parent:         # O(n) loop
+            node = stack.pop()                            # O(1) pop
+            
+            if node.left:
+                parent[node.left] = node                  # O(1) map
+                stack.append(node.left)                   # O(1) add to list
+            if node.right:
+                parent[node.right] = node                 # O(1) map
+                stack.append(node.right)                  # O(1) Constant time
+                
+        ancestors = set()                                 # O(1) constant time
+        while p:                                          # O(n) travels n times
+            ancestors.add(p)                              # O(1) add to set
+            p = parent[p]                                 # O(1) move up pointer
+        while q not in ancestors:                         # O(n) travels n time
+            q = parent[q]                                 # O(1) constant time
+        return q                                          # O(1) constant time
 ```
 
-*Fill me in*
+*The time complexity for the function is O(n) because worst goes to every node*
 
 #### Space Complexity
 
 ```python
-
+class Solution:
+    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
+        stack = [root]                                    # O(n) grows to n size
+        parent = {root: None}                             # O(n) grows to n size
+        
+        while p not in parent or q not in parent:         # O(1) constant space
+            node = stack.pop()                            # O(1) constant space
+            if node.left:
+                parent[node.left] = node                  # grows list to n size 
+                stack.append(node.left)                   # grows dict to n size
+            if node.right:
+                parent[node.right] = node                 # parent dict
+                stack.append(node.right)                  # stack
+        ancestors = set()                                 # O(n) grows to n size
+        while p:                                          # O(1) constant space
+            ancestors.add(p)                              # constant space
+            p = parent[p]                                 # O(1) constant space
+        while q not in ancestors:                         # O(1) constant space
+            q = parent[q]                                 # O(1) constant space
+        return q
 ```
 
-*Fill me in*
+*The space complexity is O(n) because of the parent dictionary stores a pointer for every node in the tree, and 
+the recursion stack*
 
 ### Extra Credit Problem 3
 
 #### Problem Information
 
-Problem Name: *39. Combination Sum*
+Problem Name: *406. Queue Reconstruction by Height*
 
-[Submission Link](https://leetcode.com/problems/combination-sum/submissions/1848138619/)
+[Submission Link](https://leetcode.com/problems/queue-reconstruction-by-height/submissions/1849978135/)
 
-![39-Combination-Sum.png](39-Combination-Sum.png)
+![406-Queue-Reconstruction.png](406-Queue-Reconstruction.png)
 
 #### Time Complexity
 
 ```python
-
+class Solution:
+    def reconstructQueue(self, people: List[List[int]]) -> List[List[int]]:
+        people.sort(key=lambda x: (-x[0], x[1]))     # O(n log n) sorted time
+        queue = []                                   # O(1) constant time
+        for p in people:                             # O(n) loop n times
+            queue.insert(p[1], p)                    # O(n) queue grows to n size 
+        return queue
 ```
 
-*Fill me in*
+*The time complexity is O(n^2) because the sort takes n time and the loop takes n time.*
 
 #### Space Complexity
 
 ```python
-
+class Solution:
+    def reconstructQueue(self, people: List[List[int]]) -> List[List[int]]:
+        people.sort(key=lambda x: (-x[0], x[1]))     # O(n) sort temp space  
+        queue = []                                   # O(n) storage
+        for p in people:                             # O(1) variable
+            queue.insert(p[1], p)                    # queue 
+        return queue
 ```
 
-*Fill me in*
+*The space complexity is O(n) because space for the sorted list and the output queue.*
 
 ### Extra Credit Problem 4
 
 #### Problem Information
 
-Problem Name: *39. Combination Sum*
+Problem Name: *207. Course Schedule*
 
-[Submission Link](https://leetcode.com/problems/combination-sum/submissions/1848138619/)
+[Submission Link]()
 
-![39-Combination-Sum.png](39-Combination-Sum.png)
+![]()
 
 #### Time Complexity
 
